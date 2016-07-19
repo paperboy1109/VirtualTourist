@@ -8,8 +8,14 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelLocationsMapVC: UIViewController {
+    
+    // MARK: - Properties
+    var coreDataStack = CoreDataStack()
+    var managedObjectContext: NSManagedObjectContext!
+    var request: NSFetchRequest!
     
     // MARK: - Outlets
     

@@ -13,6 +13,7 @@
 		4E3CE6CD1D3EB7D60020F6EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E3CE6CB1D3EB7D60020F6EC /* LaunchScreen.storyboard */; };
 		4E3CE6D61D3EB81D0020F6EC /* TravelLocationsMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6D51D3EB81D0020F6EC /* TravelLocationsMapVC.swift */; };
 		4E3CE6D91D3EBB790020F6EC /* PhotoAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6D81D3EBB790020F6EC /* PhotoAlbumVC.swift */; };
+		4E3CE6DC1D3EBD5E0020F6EC /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		4E3CE6CE1D3EB7D60020F6EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4E3CE6D51D3EB81D0020F6EC /* TravelLocationsMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelLocationsMapVC.swift; sourceTree = "<group>"; };
 		4E3CE6D81D3EBB790020F6EC /* PhotoAlbumVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumVC.swift; sourceTree = "<group>"; };
+		4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,9 +58,10 @@
 		4E3CE6C11D3EB7D60020F6EC /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				4E3CE6C21D3EB7D60020F6EC /* AppDelegate.swift */,
+				4E3CE6DA1D3EBD4C0020F6EC /* Model */,
 				4E3CE6D71D3EB8490020F6EC /* Assets */,
 				4E3CE6D41D3EB8030020F6EC /* Controller */,
-				4E3CE6C21D3EB7D60020F6EC /* AppDelegate.swift */,
 				4E3CE6CE1D3EB7D60020F6EC /* Info.plist */,
 			);
 			path = VirtualTourist;
@@ -81,6 +84,14 @@
 				4E3CE6CB1D3EB7D60020F6EC /* LaunchScreen.storyboard */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		4E3CE6DA1D3EBD4C0020F6EC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +169,7 @@
 				4E3CE6D91D3EBB790020F6EC /* PhotoAlbumVC.swift in Sources */,
 				4E3CE6C31D3EB7D60020F6EC /* AppDelegate.swift in Sources */,
 				4E3CE6D61D3EB81D0020F6EC /* TravelLocationsMapVC.swift in Sources */,
+				4E3CE6DC1D3EBD5E0020F6EC /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
