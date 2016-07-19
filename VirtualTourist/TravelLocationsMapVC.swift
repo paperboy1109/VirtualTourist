@@ -17,38 +17,45 @@ class TravelLocationsMapVC: UIViewController {
     var managedObjectContext: NSManagedObjectContext!
     var request: NSFetchRequest!
     
+    var focusAnnotation = MKPointAnnotation()
+    
     // MARK: - Outlets
     
     @IBOutlet var mapView: MKMapView!
-
+    
     // MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mapView.delegate = self
-
+        
         /* Configure the gesture recognizer */
         let touchAndHold = UILongPressGestureRecognizer(target: self, action: #selector(TravelLocationsMapVC.createNewAnnotation(_:)))
         touchAndHold.minimumPressDuration = 0.8
         mapView.addGestureRecognizer(touchAndHold)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
+    
+    
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
+        
+        if segue.identifier == "ToPhotoAlbum" {
+            let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
+            photoAlbumVC.focusAnnotation = self.focusAnnotation
+        }
         // Pass the selected object to the new view controller.
     }
-    */
+    
     
     
     
@@ -117,16 +124,17 @@ class TravelLocationsMapVC: UIViewController {
                 annotation.title = title
                 
                 self.mapView.addAnnotation(annotation)
+                self.focusAnnotation = annotation
                 
                 /* Save the annotation using Core Data */
                 /*
-                let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
-                touristLocation.latitude = annotation.coordinate.latitude
-                touristLocation.longitude = annotation.coordinate.longitude
-                touristLocation.title = annotation.title
-                
-                self.coreDataStack.saveContext()
-                */
+                 let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+                 touristLocation.latitude = annotation.coordinate.latitude
+                 touristLocation.longitude = annotation.coordinate.longitude
+                 touristLocation.title = annotation.title
+                 
+                 self.coreDataStack.saveContext()
+                 */
             }
             
             
@@ -135,8 +143,8 @@ class TravelLocationsMapVC: UIViewController {
     }
     
     
-
-
+    
+    
 }
 
 
