@@ -25,6 +25,8 @@ class TravelLocationsMapVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        mapView.delegate = self
 
         /* Configure the gesture recognizer */
         let touchAndHold = UILongPressGestureRecognizer(target: self, action: #selector(TravelLocationsMapVC.createNewAnnotation(_:)))
@@ -136,3 +138,18 @@ class TravelLocationsMapVC: UIViewController {
 
 
 }
+
+
+
+
+extension TravelLocationsMapVC: MKMapViewDelegate {
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        print("hello, you just selected an annotation view!")
+        
+        // segue: ToPhotoAlbum
+        performSegueWithIdentifier("ToPhotoAlbum", sender: self)
+    }
+}
+
+

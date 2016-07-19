@@ -31,7 +31,7 @@
                                 </constraints>
                                 <state key="normal" title="Segue"/>
                                 <connections>
-                                    <segue destination="d6S-V7-9Su" kind="show" id="ChG-6i-JDf"/>
+                                    <segue destination="d6S-V7-9Su" kind="show" identifier="ButtonSegue" id="ChG-6i-JDf"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -48,6 +48,7 @@
                     <navigationItem key="navigationItem" id="5ZQ-Sb-BQZ"/>
                     <connections>
                         <outlet property="mapView" destination="ItD-wa-xsp" id="Ii5-s7-KtS"/>
+                        <segue destination="d6S-V7-9Su" kind="show" identifier="ToPhotoAlbum" id="aXx-bi-B48"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -117,7 +118,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JEN-ct-Erv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1953" y="400"/>
+            <point key="canvasLocation" x="2086" y="400"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Ryt-kg-eGh">
@@ -138,4 +139,7 @@
             <point key="canvasLocation" x="490" y="400"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="ChG-6i-JDf"/>
+    </inferredMetricsTieBreakers>
 </document>
