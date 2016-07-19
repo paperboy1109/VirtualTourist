@@ -21,6 +21,27 @@ class PhotoAlbumVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        /*
+        MKCoordinateRegion region;
+        MKCoordinateSpan span;
+        span.latitudeDelta = 0.01;
+        span.longitudeDelta = 0.01;
+        region.span = span;
+        region.center = track; */
+        
+        var mapRegion = MKCoordinateRegion()
+        var mapSpan = MKCoordinateSpan()
+        mapSpan.latitudeDelta = 0.02
+        mapSpan.longitudeDelta = 0.02
+        mapRegion.span = mapSpan
+        mapRegion.center = CLLocationCoordinate2D(latitude: focusAnnotation.coordinate.latitude, longitude: focusAnnotation.coordinate.longitude)
+        
+        mapView.zoomEnabled = false
+        mapView.scrollEnabled = false
+        mapView.pitchEnabled = false
+        mapView.rotateEnabled = false
+        mapView.userInteractionEnabled = false
+        mapView.region = mapRegion
         
         mapView.addAnnotation(focusAnnotation)
         
