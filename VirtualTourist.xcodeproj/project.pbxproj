@@ -14,6 +14,7 @@
 		4E3CE6D61D3EB81D0020F6EC /* TravelLocationsMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6D51D3EB81D0020F6EC /* TravelLocationsMapVC.swift */; };
 		4E3CE6D91D3EBB790020F6EC /* PhotoAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6D81D3EBB790020F6EC /* PhotoAlbumVC.swift */; };
 		4E3CE6DC1D3EBD5E0020F6EC /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */; };
+		4E3CE6DF1D3EC01C0020F6EC /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4E3CE6DD1D3EC01C0020F6EC /* Model.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		4E3CE6D51D3EB81D0020F6EC /* TravelLocationsMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelLocationsMapVC.swift; sourceTree = "<group>"; };
 		4E3CE6D81D3EBB790020F6EC /* PhotoAlbumVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumVC.swift; sourceTree = "<group>"; };
 		4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		4E3CE6DE1D3EC01C0020F6EC /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */,
+				4E3CE6DD1D3EC01C0020F6EC /* Model.xcdatamodeld */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -168,6 +171,7 @@
 			files = (
 				4E3CE6D91D3EBB790020F6EC /* PhotoAlbumVC.swift in Sources */,
 				4E3CE6C31D3EB7D60020F6EC /* AppDelegate.swift in Sources */,
+				4E3CE6DF1D3EC01C0020F6EC /* Model.xcdatamodeld in Sources */,
 				4E3CE6D61D3EB81D0020F6EC /* TravelLocationsMapVC.swift in Sources */,
 				4E3CE6DC1D3EBD5E0020F6EC /* CoreDataStack.swift in Sources */,
 			);
@@ -321,6 +325,19 @@
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		4E3CE6DD1D3EC01C0020F6EC /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4E3CE6DE1D3EC01C0020F6EC /* Model.xcdatamodel */,
+			);
+			currentVersion = 4E3CE6DE1D3EC01C0020F6EC /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 4E3CE6B71D3EB7D60020F6EC /* Project object */;
 }
