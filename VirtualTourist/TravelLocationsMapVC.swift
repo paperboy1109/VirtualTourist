@@ -13,6 +13,7 @@ import CoreData
 class TravelLocationsMapVC: UIViewController {
     
     // MARK: - Properties
+    
     var coreDataStack = CoreDataStack()
     var managedObjectContext: NSManagedObjectContext!
     var request: NSFetchRequest!
@@ -25,9 +26,19 @@ class TravelLocationsMapVC: UIViewController {
     
     var travelPins: [Pin] = []
     
+    var initialVerticalPosForMap: CGFloat!
+    
+    var isInEditMode: Bool = false
+    
+    let fontDescriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleBody)
+    
     // MARK: - Outlets
     
     @IBOutlet var mapView: MKMapView!
+    
+    @IBOutlet var editButton: UIBarButtonItem!
+    
+    @IBOutlet var editAnnotationsView: UIView!
     
     // MARK: - Lifecycle
     
@@ -36,6 +47,8 @@ class TravelLocationsMapVC: UIViewController {
         
         mapView.delegate = self
         
+        editAnnotationsView.hidden = true
+        
         /* Configure the gesture recognizer */
         let touchAndHold = UILongPressGestureRecognizer(target: self, action: #selector(TravelLocationsMapVC.createNewAnnotation(_:)))
         touchAndHold.minimumPressDuration = 0.8
@@ -43,12 +56,24 @@ class TravelLocationsMapVC: UIViewController {
         
         /* Get access to persisted data */
         managedObjectContext = coreDataStack.managedObjectContext
-        persistentDataService = PersistentDataService(managedObjectContext: managedObjectContext)        
+        persistentDataService = PersistentDataService(managedObjectContext: managedObjectContext)
         
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        initialVerticalPosForMap = mapView.frame.origin.y
+        
+        if !isInEditMode {
+            editButton.title = "Edit"
+        } else {
+            editButton.title = "Done"
+            if let font = UIFont(name: "Helvetica Neue", size: 15) {
+                print("Trying to apply font ... ")
+                editButton.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
+            }
+        }
         
         loadStoredPins()
     }
@@ -73,6 +98,7 @@ class TravelLocationsMapVC: UIViewController {
         if segue.identifier == "ToPhotoAlbum" {
             let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
             photoAlbumVC.focusAnnotation = self.focusAnnotation
+            photoAlbumVC.focusCoordinate = self.focusCoordinate
         }
         
         //TODO: Pass Pin details to the photo album when a pre-existing pin is tapped
@@ -83,6 +109,23 @@ class TravelLocationsMapVC: UIViewController {
     
     @IBAction func editTapped(sender: AnyObject) {
         print("edit tapped")
+        
+        if !isInEditMode {
+            if mapView.frame.origin.y >= initialVerticalPosForMap {
+                mapView.frame.origin.y -= editAnnotationsView.frame.height
+            }
+            
+            editButton.title = "Done"
+            editAnnotationsView.hidden = false
+            isInEditMode = true
+            
+        } else {
+            
+            editAnnotationsView.hidden = true
+            mapView.frame.origin.y = initialVerticalPosForMap
+            editButton.title = "Edit"
+            isInEditMode = false
+        }
     }
     
     
@@ -183,6 +226,19 @@ class TravelLocationsMapVC: UIViewController {
         
     }
     
+    func deletePin(mapAnnotation: MKPointAnnotation) {
+        
+        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        touristLocation.latitude = mapAnnotation.coordinate.latitude
+        touristLocation.longitude = mapAnnotation.coordinate.longitude
+        touristLocation.title = mapAnnotation.title
+        
+        self.coreDataStack.saveContext()
+        
+        
+        
+    }
+    
     func loadStoredPins() {
         
         /* Get stored travel locations and display them on the map */
@@ -208,6 +264,8 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         print("hello, you just selected an annotation view!")
         
         focusCoordinate = (view.annotation?.coordinate)!
+        print("The focusCoordinate is: ")
+        print(focusCoordinate)
         
         
         // segue: ToPhotoAlbum

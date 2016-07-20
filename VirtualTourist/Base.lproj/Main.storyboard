@@ -6,6 +6,11 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="HelveticaNeue.ttc">
+            <string>HelveticaNeue</string>
+        </mutableArray>
+    </customFonts>
     <scenes>
         <!--Travel Locations MapVC-->
         <scene sceneID="tne-QT-ifu">
@@ -34,14 +39,44 @@
                                     <segue destination="d6S-V7-9Su" kind="show" identifier="ButtonSegue" id="ChG-6i-JDf"/>
                                 </connections>
                             </button>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Bw-j4-Oy2">
+                                <rect key="frame" x="0.0" y="64" width="600" height="459"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wU6-J7-tGW">
+                                <rect key="frame" x="0.0" y="523" width="600" height="77"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap a pin to remove it." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x2Z-A5-KTZ">
+                                        <rect key="frame" x="8" y="8" width="584" height="61"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.34509803919999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="x2Z-A5-KTZ" secondAttribute="trailing" constant="8" id="CQ0-yd-YDe"/>
+                                    <constraint firstAttribute="bottom" secondItem="x2Z-A5-KTZ" secondAttribute="bottom" constant="8" id="ahx-s4-kW8"/>
+                                    <constraint firstItem="x2Z-A5-KTZ" firstAttribute="top" secondItem="wU6-J7-tGW" secondAttribute="top" constant="8" id="epj-gf-Jp5"/>
+                                    <constraint firstItem="x2Z-A5-KTZ" firstAttribute="leading" secondItem="wU6-J7-tGW" secondAttribute="leading" constant="8" id="hnY-83-xOX"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ItD-wa-xsp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="G6V-t2-wIY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ItD-wa-xsp" secondAttribute="trailing" constant="-20" id="LTX-tv-7wT"/>
                             <constraint firstItem="ItD-wa-xsp" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="OOe-qg-paA"/>
+                            <constraint firstAttribute="trailing" secondItem="3Bw-j4-Oy2" secondAttribute="trailing" id="PAQ-20-zi5"/>
+                            <constraint firstItem="wU6-J7-tGW" firstAttribute="height" secondItem="3Bw-j4-Oy2" secondAttribute="height" multiplier="1:6" id="PI7-sx-ZAi"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wU6-J7-tGW" secondAttribute="bottom" id="VVe-VJ-VHI"/>
+                            <constraint firstAttribute="trailing" secondItem="wU6-J7-tGW" secondAttribute="trailing" id="Z7x-4w-stP"/>
+                            <constraint firstItem="3Bw-j4-Oy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="d8S-LA-60O"/>
+                            <constraint firstItem="wU6-J7-tGW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="hOX-3M-aSl"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ItD-wa-xsp" secondAttribute="bottom" id="hng-Zb-Bch"/>
                             <constraint firstItem="LFu-bf-AxV" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jUj-dA-XIg"/>
+                            <constraint firstItem="wU6-J7-tGW" firstAttribute="top" secondItem="3Bw-j4-Oy2" secondAttribute="bottom" id="tG6-ZF-WhT"/>
+                            <constraint firstItem="3Bw-j4-Oy2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="xjf-l3-VcZ"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="LFu-bf-AxV" secondAttribute="bottom" constant="20" id="zix-ug-SIu"/>
                         </constraints>
                     </view>
@@ -53,6 +88,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editAnnotationsView" destination="wU6-J7-tGW" id="wlq-g8-YBe"/>
+                        <outlet property="editButton" destination="U2M-27-Y2H" id="1g6-O3-BwO"/>
                         <outlet property="mapView" destination="ItD-wa-xsp" id="Ii5-s7-KtS"/>
                         <segue destination="d6S-V7-9Su" kind="show" identifier="ToPhotoAlbum" id="aXx-bi-B48"/>
                     </connections>

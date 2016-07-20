@@ -12,7 +12,10 @@ import MapKit
 class PhotoAlbumVC: UIViewController {
     
     // MARK: - Properties
+    
     var focusAnnotation = MKPointAnnotation()
+    
+    var focusCoordinate = CLLocationCoordinate2D()
     
     // MARK: - Outlets
     
@@ -22,19 +25,20 @@ class PhotoAlbumVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         /*
-        MKCoordinateRegion region;
-        MKCoordinateSpan span;
-        span.latitudeDelta = 0.01;
-        span.longitudeDelta = 0.01;
-        region.span = span;
-        region.center = track; */
+         MKCoordinateRegion region;
+         MKCoordinateSpan span;
+         span.latitudeDelta = 0.01;
+         span.longitudeDelta = 0.01;
+         region.span = span;
+         region.center = track; */
         
         var mapRegion = MKCoordinateRegion()
         var mapSpan = MKCoordinateSpan()
         mapSpan.latitudeDelta = 0.02
         mapSpan.longitudeDelta = 0.02
         mapRegion.span = mapSpan
-        mapRegion.center = CLLocationCoordinate2D(latitude: focusAnnotation.coordinate.latitude, longitude: focusAnnotation.coordinate.longitude)
+        //mapRegion.center = CLLocationCoordinate2D(latitude: focusAnnotation.coordinate.latitude, longitude: focusAnnotation.coordinate.longitude)
+        mapRegion.center = focusCoordinate
         
         mapView.zoomEnabled = false
         mapView.scrollEnabled = false
@@ -43,14 +47,20 @@ class PhotoAlbumVC: UIViewController {
         mapView.userInteractionEnabled = false
         mapView.region = mapRegion
         
-        mapView.addAnnotation(focusAnnotation)
+        if focusAnnotation.coordinate.latitude != 0.0 && focusAnnotation.coordinate.longitude != 0 {
+            mapView.addAnnotation(focusAnnotation)
+        } else {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = focusCoordinate
+            mapView.addAnnotation(annotation)
+        }
         
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        print("(PhotoAlbum, viewWillLoad")
+        print("(PhotoAlbum, viewWillLoad)")
         print(focusAnnotation.coordinate.latitude)
         print(focusAnnotation.coordinate.longitude)
     }
