@@ -47,6 +47,14 @@ class PhotoAlbumVC: UIViewController {
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        print("(PhotoAlbum, viewWillLoad")
+        print(focusAnnotation.coordinate.latitude)
+        print(focusAnnotation.coordinate.longitude)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

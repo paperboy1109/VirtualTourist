@@ -19,6 +19,8 @@ class TravelLocationsMapVC: UIViewController {
     
     var focusAnnotation = MKPointAnnotation()
     
+    var focusCoordinate = CLLocationCoordinate2D()
+    
     var persistentDataService: PersistentDataService!
     
     var travelPins: [Pin] = []
@@ -45,6 +47,12 @@ class TravelLocationsMapVC: UIViewController {
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        loadStoredPins()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -62,7 +70,8 @@ class TravelLocationsMapVC: UIViewController {
             let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
             photoAlbumVC.focusAnnotation = self.focusAnnotation
         }
-        // Pass the selected object to the new view controller.
+        
+        //TODO: Pass Pin details to the photo album when a pre-existing pin is tapped
     }
     
     
@@ -165,6 +174,19 @@ class TravelLocationsMapVC: UIViewController {
         
     }
     
+    func loadStoredPins() {
+        
+        /* Get stored travel locations and display them on the map */
+        travelPins = persistentDataService.getPinEntities()
+        
+        for item in travelPins {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: Double(item.latitude!), longitude: Double(item.longitude!))
+            annotation.title = item.title!
+            self.mapView.addAnnotation(annotation)
+        }
+    }
+    
     
 }
 
@@ -175,6 +197,9 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         print("hello, you just selected an annotation view!")
+        
+        focusCoordinate = (view.annotation?.coordinate)!
+        
         
         // segue: ToPhotoAlbum
         performSegueWithIdentifier("ToPhotoAlbum", sender: self)
