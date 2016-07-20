@@ -66,6 +66,10 @@ class TravelLocationsMapVC: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         
+        let navigationBackButton = UIBarButtonItem()
+        navigationBackButton.title = "Ok"
+        navigationItem.backBarButtonItem = navigationBackButton
+        
         if segue.identifier == "ToPhotoAlbum" {
             let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
             photoAlbumVC.focusAnnotation = self.focusAnnotation
@@ -74,7 +78,12 @@ class TravelLocationsMapVC: UIViewController {
         //TODO: Pass Pin details to the photo album when a pre-existing pin is tapped
     }
     
+    // MARK: - Actions
     
+    
+    @IBAction func editTapped(sender: AnyObject) {
+        print("edit tapped")
+    }
     
     
     // MARK: - Helpers

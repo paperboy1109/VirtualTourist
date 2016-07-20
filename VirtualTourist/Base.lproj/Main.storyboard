@@ -45,7 +45,13 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="LFu-bf-AxV" secondAttribute="bottom" constant="20" id="zix-ug-SIu"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="5ZQ-Sb-BQZ"/>
+                    <navigationItem key="navigationItem" id="5ZQ-Sb-BQZ">
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="U2M-27-Y2H">
+                            <connections>
+                                <action selector="editTapped:" destination="BYZ-38-t0r" id="lZc-4T-qrt"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="ItD-wa-xsp" id="Ii5-s7-KtS"/>
                         <segue destination="d6S-V7-9Su" kind="show" identifier="ToPhotoAlbum" id="aXx-bi-B48"/>
