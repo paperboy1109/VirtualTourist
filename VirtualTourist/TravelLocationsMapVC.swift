@@ -19,6 +19,10 @@ class TravelLocationsMapVC: UIViewController {
     
     var focusAnnotation = MKPointAnnotation()
     
+    var persistentDataService: PersistentDataService!
+    
+    var travelPins: [Pin] = []
+    
     // MARK: - Outlets
     
     @IBOutlet var mapView: MKMapView!
@@ -34,6 +38,11 @@ class TravelLocationsMapVC: UIViewController {
         let touchAndHold = UILongPressGestureRecognizer(target: self, action: #selector(TravelLocationsMapVC.createNewAnnotation(_:)))
         touchAndHold.minimumPressDuration = 0.8
         mapView.addGestureRecognizer(touchAndHold)
+        
+        /* Get access to persisted data */
+        managedObjectContext = coreDataStack.managedObjectContext
+        persistentDataService = PersistentDataService(managedObjectContext: managedObjectContext)        
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -135,6 +144,8 @@ class TravelLocationsMapVC: UIViewController {
                  
                  self.coreDataStack.saveContext()
                  */
+                
+                self.savePin(annotation)
             }
             
             
@@ -143,6 +154,16 @@ class TravelLocationsMapVC: UIViewController {
     }
     
     
+    func savePin(mapAnnotation: MKPointAnnotation) {
+        
+        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        touristLocation.latitude = mapAnnotation.coordinate.latitude
+        touristLocation.longitude = mapAnnotation.coordinate.longitude
+        touristLocation.title = mapAnnotation.title
+        
+        self.coreDataStack.saveContext()
+        
+    }
     
     
 }
