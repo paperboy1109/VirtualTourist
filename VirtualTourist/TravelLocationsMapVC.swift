@@ -261,14 +261,51 @@ class TravelLocationsMapVC: UIViewController {
 extension TravelLocationsMapVC: MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        print("hello, you just selected an annotation view!")
+        print("\nhello, you just selected an annotation view!")
+        for item in travelPins {
+            print(item.latitude as! Double)
+            print((view.annotation?.coordinate.latitude)! as Double)
+        }
         
         focusCoordinate = (view.annotation?.coordinate)!
         print("The focusCoordinate is: ")
         print(focusCoordinate)
         
         if isInEditMode {
+            
+            /* Remove the annotation from the map */
             mapView.removeAnnotation(view.annotation!)
+            
+            /* Remove the annotation from the data store */
+            print("Checking for equality ... ")
+            for item in travelPins {
+                print("looping ...")
+                
+                if item.latitude == focusCoordinate.latitude && item.longitude == focusCoordinate.longitude {
+                    print("It's a match!")
+                    
+                    print(travelPins[travelPins.indexOf(item)!])
+                    
+                    persistentDataService.removePinEntity(travelPins[travelPins.indexOf(item)!])
+                    
+                    travelPins.removeAtIndex(travelPins.indexOf(item)!)
+                    self.coreDataStack.saveContext()
+                    
+                }
+                
+                /*
+                if (item.latitude as! Double) == ((view.annotation?.coordinate.latitude)! as Double) {
+                    print("hello")
+                    
+                    print(travelPins.indexOf(item))
+                    
+                    travelPins.removeAtIndex(travelPins.indexOf(item)!)
+                    self.coreDataStack.saveContext()
+                } */
+            }
+            
+
+            
         } else {                        
             // segue: ToPhotoAlbum
             performSegueWithIdentifier("ToPhotoAlbum", sender: self)

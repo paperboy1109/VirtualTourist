@@ -38,4 +38,13 @@ public class PersistentDataService {
         
     }
     
+    func removePinEntity(entityToRemove: Pin) {
+        // TODO: Implement this function
+        print("\nremovePinEntity called ")
+        print(entityToRemove)
+        
+        managedObjectContext.deleteObject(entityToRemove)
+        
+    }
+    
 }
