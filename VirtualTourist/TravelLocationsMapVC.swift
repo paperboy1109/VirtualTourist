@@ -267,9 +267,12 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         print("The focusCoordinate is: ")
         print(focusCoordinate)
         
-        
-        // segue: ToPhotoAlbum
-        performSegueWithIdentifier("ToPhotoAlbum", sender: self)
+        if isInEditMode {
+            mapView.removeAnnotation(view.annotation!)
+        } else {                        
+            // segue: ToPhotoAlbum
+            performSegueWithIdentifier("ToPhotoAlbum", sender: self)
+        }
     }
 }
 
