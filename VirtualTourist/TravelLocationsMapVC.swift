@@ -14,8 +14,10 @@ class TravelLocationsMapVC: UIViewController {
     
     // MARK: - Properties
     
-    var coreDataStack = CoreDataStack()
-    var managedObjectContext: NSManagedObjectContext!
+    // var coreDataStack = CoreDataStack()
+    // var managedObjectContext: NSManagedObjectContext!
+    var sharedContext = CoreDataStack.sharedInstance().managedObjectContext
+    
     var request: NSFetchRequest!
     
     var focusAnnotation = MKPointAnnotation()
@@ -55,8 +57,9 @@ class TravelLocationsMapVC: UIViewController {
         mapView.addGestureRecognizer(touchAndHold)
         
         /* Get access to persisted data */
-        managedObjectContext = coreDataStack.managedObjectContext
-        persistentDataService = PersistentDataService(managedObjectContext: managedObjectContext)
+        // managedObjectContext = coreDataStack.managedObjectContext
+        // persistentDataService = PersistentDataService(managedObjectContext: managedObjectContext)
+        persistentDataService = PersistentDataService(managedObjectContext: sharedContext)
         
     }
     
@@ -217,23 +220,27 @@ class TravelLocationsMapVC: UIViewController {
     
     func savePin(mapAnnotation: MKPointAnnotation) {
         
-        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.sharedContext) as! Pin
         touristLocation.latitude = mapAnnotation.coordinate.latitude
         touristLocation.longitude = mapAnnotation.coordinate.longitude
         touristLocation.title = mapAnnotation.title
         
-        self.coreDataStack.saveContext()
+        //self.coreDataStack.saveContext()
+        CoreDataStack.sharedInstance().saveContext()
         
     }
     
     func deletePin(mapAnnotation: MKPointAnnotation) {
         
-        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.sharedContext) as! Pin
         touristLocation.latitude = mapAnnotation.coordinate.latitude
         touristLocation.longitude = mapAnnotation.coordinate.longitude
         touristLocation.title = mapAnnotation.title
         
-        self.coreDataStack.saveContext()
+        // self.coreDataStack.saveContext()
+        CoreDataStack.sharedInstance().saveContext()
         
         
         
@@ -289,7 +296,9 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
                     persistentDataService.removePinEntity(travelPins[travelPins.indexOf(item)!])
                     
                     travelPins.removeAtIndex(travelPins.indexOf(item)!)
-                    self.coreDataStack.saveContext()
+                    
+                    // self.coreDataStack.saveContext()
+                    CoreDataStack.sharedInstance().saveContext()
                     
                 }
                 

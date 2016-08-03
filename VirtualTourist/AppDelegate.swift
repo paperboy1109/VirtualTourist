@@ -20,9 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         /* Set the managed object context */
         let coreDataStack = CoreDataStack()
         
-        let rootNavigationController = self.window?.rootViewController as! UINavigationController
-        let initialVC = rootNavigationController.topViewController as! TravelLocationsMapVC
-        initialVC.managedObjectContext = coreDataStack.managedObjectContext
+        //let rootNavigationController = self.window?.rootViewController as! UINavigationController
+        //let initialVC = rootNavigationController.topViewController as! TravelLocationsMapVC
+        //initialVC.managedObjectContext = coreDataStack.managedObjectContext
         
         checkDataStore()
         
