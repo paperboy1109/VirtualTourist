@@ -23,6 +23,12 @@ class PhotoAlbumVC: UIViewController {
     var updatedIndexPaths: [NSIndexPath]!
     var photoToDelete: Photo?
     
+    var locationHasStoredPhotos = false
+    
+    let maxPhotos = 18
+    var maxFlickrPhotoPageNumber = 1    
+    var targetFlickrPhotoPage = 1
+    
     // MARK: - Outlets
     
     @IBOutlet var mapView: MKMapView!
@@ -54,6 +60,18 @@ class PhotoAlbumVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        /* Start the fetched results controller */
+        var error: NSError?
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error1 as NSError {
+            error = error1
+        }
+        
+        if let error = error {
+            print("Error performing initial fetch: \(error)")
+        }
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -63,15 +81,62 @@ class PhotoAlbumVC: UIViewController {
         print(self.mapAnnotation)
         print(self.mapAnnotation.title)
         print(self.mapAnnotation.pin)
+        
+        // For debugging only ---
+        let flotsam = fetchedResultsController.fetchedObjects
+        print("\nHere is flotsam: ")
+        print(flotsam)
+        print("Here is the number of photos that were returnded: \(flotsam?.count)")
+        print(fetchedResultsController.sections?.count)
+        // ---------------------------------------------
+        
+        if let totalStoredPhotos = fetchedResultsController.fetchedObjects?.count {
+            if totalStoredPhotos > 0 {
+                locationHasStoredPhotos = true
+            }
+        }
+        
+        if !locationHasStoredPhotos {
+            print("New photos need to be downloaded from flickr")
+        }
     }
     
     // MARK: - Helpers
+    
+    func loadNewImages(targetPage: Int, completionHandlerForloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
+        
+        FlickrClient.sharedInstance().getRandomSubsetPhotoDataArrayFromFlickr(targetFlickrPhotoPage, maxPhotos: maxPhotos) { (newPhotoArray, pageTotal, error, errorDesc) in
+            
+            print("\n\n (getRandomSubsetPhotoDataArrayFromFlickr closure) Here is newPhotoArray: ")
+            //print(newPhotoArray)
+            //print(newPhotoArray?.count)
+            print("muted")
+            
+            if !error {
+                
+                print("Here is the page total: ")
+                print(pageTotal)
+                
+                if let newMaxFlickrPhotoPages = pageTotal {
+                    print(newMaxFlickrPhotoPages)
+                    self.maxFlickrPhotoPageNumber = newMaxFlickrPhotoPages
+                }
+                
+                completionHandlerForloadNewImages(newPhotoArray: newPhotoArray, error: false, errorDesc: nil)
+                
+            } else {
+                completionHandlerForloadNewImages(newPhotoArray: nil, error: true, errorDesc: "Unable to return new images")
+            }
+            
+        }
+        
+    }
     
     // MARK: - NSFetchedResultsController
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
         
-        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
         fetchRequest.sortDescriptors = []
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
