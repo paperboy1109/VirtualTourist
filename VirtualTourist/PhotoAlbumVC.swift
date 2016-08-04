@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoAlbumVC: UIViewController {
     
@@ -16,6 +17,11 @@ class PhotoAlbumVC: UIViewController {
     var sharedContext = CoreDataStack.sharedInstance().managedObjectContext
     
     var mapAnnotation: CustomPinAnnotation!
+    
+    var insertedIndexPaths: [NSIndexPath]!
+    var deletedIndexPaths: [NSIndexPath]!
+    var updatedIndexPaths: [NSIndexPath]!
+    var photoToDelete: Photo?
     
     // MARK: - Outlets
     
@@ -60,6 +66,19 @@ class PhotoAlbumVC: UIViewController {
     }
     
     // MARK: - Helpers
+    
+    // MARK: - NSFetchedResultsController
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        fetchRequest.sortDescriptors = []
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+    }()
     
 }
 
@@ -119,3 +138,65 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
 }
 
 
+// MARK: - Delegate methods for the fetched results controller
+
+extension PhotoAlbumVC: NSFetchedResultsControllerDelegate {
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        
+        /* Detect the type of change that has triggered the event */
+        
+        switch type {
+            
+        case .Insert:
+            print("NSFetchedResultsChangeType.Insert detected")
+            let newIndexPathAdjusted = NSIndexPath(forItem: newIndexPath!.item, inSection: 0)
+            insertedIndexPaths.append(newIndexPathAdjusted)
+        case .Delete:
+            print("NSFetchedResultsChangeType.Delete detected")
+            let indexPathAdjusted = NSIndexPath(forItem: indexPath!.item, inSection: 0)
+            deletedIndexPaths.append(indexPathAdjusted)
+        case .Update:
+            print("NSFetchedResultsChangeType.Update detected")
+            let indexPathAdjusted = NSIndexPath(forItem: indexPath!.item, inSection: 0)
+            updatedIndexPaths.append(indexPathAdjusted)
+        case .Move:
+            print("NSFetchedResultsChangeType.Move detected")
+            fallthrough
+        default:
+            break
+        }
+    }
+    
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        
+        insertedIndexPaths = [NSIndexPath]()
+        deletedIndexPaths = [NSIndexPath]()
+        updatedIndexPaths = [NSIndexPath]()
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        
+        self.collectionView.performBatchUpdates( { () -> Void in
+            
+            for indexPath in self.insertedIndexPaths {
+                self.collectionView.insertItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                self.collectionView.deleteItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.updatedIndexPaths {
+                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+            }
+            }, completion: { (success) in
+                
+                print("The completion handler for controllerDidChangeContent was called")
+                print("Here is 'success':  ")
+                print(success)
+            }
+        )
+        
+    }
+}
