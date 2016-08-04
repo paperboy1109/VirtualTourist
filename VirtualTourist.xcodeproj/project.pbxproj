@@ -20,6 +20,7 @@
 		4E3D3DFF1D3F22D3007C4B6C /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3D3DFB1D3F22D3007C4B6C /* Photo.swift */; };
 		4E3D3E001D3F22D3007C4B6C /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3D3DFC1D3F22D3007C4B6C /* Pin+CoreDataProperties.swift */; };
 		4E3D3E011D3F22D3007C4B6C /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3D3DFD1D3F22D3007C4B6C /* Pin.swift */; };
+		4E5F4BFC1D52B7AB00F28737 /* CustomPinAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F4BFB1D52B7AB00F28737 /* CustomPinAnnotation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		4E3D3DFB1D3F22D3007C4B6C /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		4E3D3DFC1D3F22D3007C4B6C /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4E3D3DFD1D3F22D3007C4B6C /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
+		4E5F4BFB1D52B7AB00F28737 /* CustomPinAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPinAnnotation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				4E3D3DFD1D3F22D3007C4B6C /* Pin.swift */,
 				4E3CE6DB1D3EBD5E0020F6EC /* CoreDataStack.swift */,
 				4E3CE6DD1D3EC01C0020F6EC /* Model.xcdatamodeld */,
+				4E5F4BFB1D52B7AB00F28737 /* CustomPinAnnotation.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				4E3D3E011D3F22D3007C4B6C /* Pin.swift in Sources */,
 				4E3CE6C31D3EB7D60020F6EC /* AppDelegate.swift in Sources */,
 				4E3CE6DF1D3EC01C0020F6EC /* Model.xcdatamodeld in Sources */,
+				4E5F4BFC1D52B7AB00F28737 /* CustomPinAnnotation.swift in Sources */,
 				4E3CE6D61D3EB81D0020F6EC /* TravelLocationsMapVC.swift in Sources */,
 				4E3CE6DC1D3EBD5E0020F6EC /* CoreDataStack.swift in Sources */,
 			);

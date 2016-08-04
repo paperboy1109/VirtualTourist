@@ -251,11 +251,17 @@ class TravelLocationsMapVC: UIViewController {
         /* Get stored travel locations and display them on the map */
         travelPins = persistentDataService.getPinEntities()
         
+        /*
         for item in travelPins {
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: Double(item.latitude!), longitude: Double(item.longitude!))
             annotation.title = item.title!
             self.mapView.addAnnotation(annotation)
+        } */
+        
+        for item in travelPins {
+            let pinAnnotation = CustomPinAnnotation(pin: item, title: item.title, subtitle: nil)
+            self.mapView.addAnnotation(pinAnnotation)
         }
     }
     
@@ -268,7 +274,9 @@ class TravelLocationsMapVC: UIViewController {
 extension TravelLocationsMapVC: MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        
         print("\nhello, you just selected an annotation view!")
+        
         for item in travelPins {
             print(item.latitude as! Double)
             print((view.annotation?.coordinate.latitude)! as Double)
@@ -279,9 +287,6 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         print(focusCoordinate)
         
         if isInEditMode {
-            
-            /* Remove the annotation from the map */
-            mapView.removeAnnotation(view.annotation!)
             
             /* Remove the annotation from the data store */
             print("Checking for equality ... ")
@@ -299,6 +304,9 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
                     
                     // self.coreDataStack.saveContext()
                     CoreDataStack.sharedInstance().saveContext()
+                    
+                    /* Remove the annotation from the map */
+                    mapView.removeAnnotation(view.annotation!)
                     
                 }
                 
