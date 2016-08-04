@@ -101,10 +101,7 @@ class TravelLocationsMapVC: UIViewController {
         navigationItem.backBarButtonItem = navigationBackButton
         
         if segue.identifier == "ToPhotoAlbum" {
-            let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
-            photoAlbumVC.focusAnnotation = self.focusAnnotation
-            photoAlbumVC.focusCoordinate = self.focusCoordinate
-            
+            let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC         
             photoAlbumVC.mapAnnotation = self.selectedPin
         }
         
