@@ -111,6 +111,7 @@ class TravelLocationsMapVC: UIViewController {
     
     
     @IBAction func editTapped(sender: AnyObject) {
+        //deleteAllPins()
         print("edit tapped")
         
         if !isInEditMode {
@@ -196,8 +197,23 @@ class TravelLocationsMapVC: UIViewController {
                 annotation.coordinate = newCoordinate
                 annotation.title = title
                 
-                self.mapView.addAnnotation(annotation)
                 self.focusAnnotation = annotation
+                
+                // *** Use custom class ***
+                //self.mapView.addAnnotation(annotation)
+                //let newPin = Pin(entity: <#T##NSEntityDescription#>, insertIntoManagedObjectContext: <#T##NSManagedObjectContext?#>)
+                //let pinAnnotation = CustomPinAnnotation(pin: item, title: item.title, subtitle: nil)
+                //self.mapView.addAnnotation(pinAnnotation)
+                
+                /* Create a Pin entity, a custom annotation based on it, and add an annotation to the map */
+                print("Creating a new Pin entity .... ")
+                let pinAnnotation = self.saveNewPinAndCreateAnnotation(annotation)
+                self.mapView.addAnnotation(pinAnnotation)
+                print("This annotation was added to the map: ")
+                print(pinAnnotation.title)
+                
+                
+                
                 
                 /* Save the annotation using Core Data */
                 /*
@@ -209,7 +225,9 @@ class TravelLocationsMapVC: UIViewController {
                  self.coreDataStack.saveContext()
                  */
                 
-                self.savePin(annotation)
+                
+                
+                // self.savePin(annotation)
             }
             
             
@@ -231,6 +249,20 @@ class TravelLocationsMapVC: UIViewController {
         
     }
     
+    func saveNewPinAndCreateAnnotation(mapAnnotation: MKPointAnnotation) -> CustomPinAnnotation {
+        
+        // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
+        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.sharedContext) as! Pin
+        touristLocation.latitude = mapAnnotation.coordinate.latitude
+        touristLocation.longitude = mapAnnotation.coordinate.longitude
+        touristLocation.title = mapAnnotation.title
+        CoreDataStack.sharedInstance().saveContext()
+        
+        let pinAnnotation = CustomPinAnnotation(pin: touristLocation, title: mapAnnotation.title, subtitle: nil)
+        return pinAnnotation
+        
+    }
+    
     func deletePin(mapAnnotation: MKPointAnnotation) {
         
         // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
@@ -241,9 +273,14 @@ class TravelLocationsMapVC: UIViewController {
         
         // self.coreDataStack.saveContext()
         CoreDataStack.sharedInstance().saveContext()
-        
-        
-        
+    }
+    
+    func deleteAllPins() {
+        travelPins = persistentDataService.getPinEntities()
+        for item in travelPins {
+            self.sharedContext.deleteObject(item)
+        }
+        CoreDataStack.sharedInstance().saveContext()
     }
     
     func loadStoredPins() {
@@ -286,9 +323,35 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         print("The focusCoordinate is: ")
         print(focusCoordinate)
         
+        print("The associated Pin entity is: ")
+        let customAnnotation = view.annotation as! CustomPinAnnotation
+        print(customAnnotation)
+        print(customAnnotation.pin)
+        print(travelPins.indexOf(customAnnotation.pin))
+        
         if isInEditMode {
             
-            /* Remove the annotation from the data store */
+            let pinToRemove = customAnnotation.pin
+            travelPins.removeAtIndex(travelPins.indexOf(pinToRemove)!)
+            persistentDataService.removePinEntity(pinToRemove)
+            
+            /* Remove the Pin entity associated with the annotation */
+            // persistentDataService.removePinEntity(travelPins[travelPins.indexOf(customAnnotation.pin)!])
+            // travelPins.removeAtIndex(travelPins.indexOf(customAnnotation.pin)!)
+            
+            
+            // Causes crash ---
+            //travelPins.removeAtIndex(travelPins.indexOf(customAnnotation.pin)!)
+            //persistentDataService.removePinEntity(customAnnotation.pin)
+            // -------------------------------------------------------------
+            
+            CoreDataStack.sharedInstance().saveContext()
+            
+            /* Remove the annotation from the map */
+            mapView.removeAnnotation(view.annotation!)
+            
+            
+            /*
             print("Checking for equality ... ")
             for item in travelPins {
                 print("looping ...")
@@ -309,6 +372,7 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
                     mapView.removeAnnotation(view.annotation!)
                     
                 }
+ 
                 
                 /*
                 if (item.latitude as! Double) == ((view.annotation?.coordinate.latitude)! as Double) {
@@ -320,7 +384,7 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
                     self.coreDataStack.saveContext()
                 } */
             }
-            
+            */
 
             
         } else {                        
