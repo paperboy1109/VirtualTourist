@@ -14,11 +14,59 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    /* Persist the map view location */
+    func configureMap() {
+        
+        let latitudeKey = "Latitude Key"
+        let longitudeKey = "Longitude Key"
+        
+        let latitudeDeltaKey = "Latitude Delta Key"
+        let longitudeDeltaKey = "Longitude Delta Key"
+        
+        let previousUseKey = "App Prior Launch Key"
+       
+        let previousLatitude: Double
+        let previousLongitude: Double
+        let previouslatitudeDelta: Float
+        let previouslongitudeDelta: Float
+        
+        if NSUserDefaults.standardUserDefaults().boolForKey(previousUseKey) {
+            
+            print("The app has been used before")
+            
+        } else {
+            
+            print("The app has not been used before")
+            
+            /* This is the default view of North America */
+            //            defaultCenter = CLLocationCoordinate2D(latitude: 37.13283999999998, longitude: -95.785579999999996)
+            //            defaultSpan = MKCoordinateSpan(latitudeDelta: 72.355996899647238, longitudeDelta: 61.276016959789544)
+            
+            previousLatitude = 37.13283999999998
+            previousLongitude = -95.785579999999996
+            previouslatitudeDelta = 72.355996899647238
+            previouslongitudeDelta = 61.276016959789544
+            
+            /* The app will no longer be launching for the first time */
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: previousUseKey)
+            
+            NSUserDefaults.standardUserDefaults().setValue(previousLatitude, forKey: latitudeKey)
+            NSUserDefaults.standardUserDefaults().setValue(previousLongitude, forKey: longitudeKey)
+            
+            NSUserDefaults.standardUserDefaults().setValue(previouslatitudeDelta, forKey: latitudeDeltaKey)
+            NSUserDefaults.standardUserDefaults().setValue(previouslongitudeDelta, forKey: longitudeDeltaKey)
+            
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+        
+    }
+
+    
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         /* Set the managed object context */
-        let coreDataStack = CoreDataStack()
+        //let coreDataStack = CoreDataStack()
         
         //let rootNavigationController = self.window?.rootViewController as! UINavigationController
         //let initialVC = rootNavigationController.topViewController as! TravelLocationsMapVC

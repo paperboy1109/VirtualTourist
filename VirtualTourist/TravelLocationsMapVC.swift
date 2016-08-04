@@ -30,6 +30,12 @@ class TravelLocationsMapVC: UIViewController {
     
     var travelPins: [Pin] = []
     
+    let latitudeKey = "Latitude Key"
+    let longitudeKey = "Longitude Key"
+    let latitudeDeltaKey = "Latitude Delta Key"
+    let longitudeDeltaKey = "Longitude Delta Key"
+    let previousUseKey = "App Prior Launch Key"
+    
     var initialVerticalPosForMap: CGFloat!
     
     var isInEditMode: Bool = false
@@ -50,6 +56,7 @@ class TravelLocationsMapVC: UIViewController {
         super.viewDidLoad()
         
         mapView.delegate = self
+        setMapRegion()
         
         editAnnotationsView.hidden = true
         
@@ -110,7 +117,6 @@ class TravelLocationsMapVC: UIViewController {
     
     // MARK: - Actions
     
-    
     @IBAction func editTapped(sender: AnyObject) {
         //deleteAllPins()
         print("edit tapped")
@@ -135,6 +141,24 @@ class TravelLocationsMapVC: UIViewController {
     
     
     // MARK: - Helpers
+    
+    func setMapRegion() {
+        
+        // Set up the map
+        
+        let startingLatitude = NSUserDefaults.standardUserDefaults().valueForKey(latitudeKey) as? Double
+        let startingLongitude = NSUserDefaults.standardUserDefaults().valueForKey(longitudeKey) as? Double
+        let coordinate = CLLocationCoordinate2DMake(startingLatitude!, startingLongitude!)
+        
+        let latDelta:CLLocationDegrees = NSUserDefaults.standardUserDefaults().valueForKey(latitudeDeltaKey) as! Double //0.01
+        let lonDelta:CLLocationDegrees = NSUserDefaults.standardUserDefaults().valueForKey(longitudeDeltaKey) as! Double //0.01
+        let span:MKCoordinateSpan = MKCoordinateSpanMake(latDelta, lonDelta)
+        
+        let region:MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
+        
+        self.mapView.setRegion(region, animated: true)
+        
+    }
     
     func createNewAnnotation(gestureRecognizer:UIGestureRecognizer) {
         
@@ -310,6 +334,23 @@ class TravelLocationsMapVC: UIViewController {
 
 
 extension TravelLocationsMapVC: MKMapViewDelegate {
+    
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        print("\nMap view region changed, saving new position\n")
+        let currentRegion = mapView.region
+        print("Here is currentRegion: \(currentRegion)")
+        print("Here is currentRegion.center: \(currentRegion.center)")
+        print("Here is currentRegion.span: \(currentRegion.span)")
+        
+        NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.center.latitude), forKey: latitudeKey)
+        NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.center.longitude), forKey: longitudeKey)
+        NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.span.latitudeDelta), forKey: latitudeDeltaKey)
+        NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.span.longitudeDelta), forKey: longitudeDeltaKey)
+        NSUserDefaults.standardUserDefaults().synchronize()
+        
+        let flotsam = NSUserDefaults.standardUserDefaults().valueForKey(latitudeKey) as? Double
+        print("\n\nHere is the value for latitudeKey: \(flotsam)")
+    }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         
