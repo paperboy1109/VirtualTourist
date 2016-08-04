@@ -24,6 +24,8 @@ class TravelLocationsMapVC: UIViewController {
     
     var focusCoordinate = CLLocationCoordinate2D()
     
+    var selectedPin: CustomPinAnnotation!
+    
     var persistentDataService: PersistentDataService!
     
     var travelPins: [Pin] = []
@@ -102,6 +104,8 @@ class TravelLocationsMapVC: UIViewController {
             let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
             photoAlbumVC.focusAnnotation = self.focusAnnotation
             photoAlbumVC.focusCoordinate = self.focusCoordinate
+            
+            photoAlbumVC.mapAnnotation = self.selectedPin
         }
         
         //TODO: Pass Pin details to the photo album when a pre-existing pin is tapped
@@ -328,6 +332,9 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         print(customAnnotation)
         print(customAnnotation.pin)
         print(travelPins.indexOf(customAnnotation.pin))
+        
+        /* This is the annotation that will be passed to the Photo Album */
+        selectedPin = view.annotation as! CustomPinAnnotation
         
         if isInEditMode {
             

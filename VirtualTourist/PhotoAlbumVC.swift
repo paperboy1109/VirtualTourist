@@ -17,6 +17,8 @@ class PhotoAlbumVC: UIViewController {
     
     var focusCoordinate = CLLocationCoordinate2D()
     
+    var mapAnnotation: CustomPinAnnotation!
+    
     // MARK: - Outlets
     
     @IBOutlet var mapView: MKMapView!
@@ -63,6 +65,11 @@ class PhotoAlbumVC: UIViewController {
         print("(PhotoAlbum, viewWillLoad)")
         print(focusAnnotation.coordinate.latitude)
         print(focusAnnotation.coordinate.longitude)
+        
+        print("Here is the map annotation: ")
+        print(self.mapAnnotation)
+        print(self.mapAnnotation.title)
+        print(self.mapAnnotation.pin)
     }
     
     override func didReceiveMemoryWarning() {
