@@ -376,64 +376,17 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         
         if isInEditMode {
             
+            /* Remove the annotation from the map */
+            mapView.removeAnnotation(view.annotation!)
+            
+            /* Remove references to the pin and remove it from the data store */
             let pinToRemove = customAnnotation.pin
             travelPins.removeAtIndex(travelPins.indexOf(pinToRemove)!)
             persistentDataService.removePinEntity(pinToRemove)
             
-            /* Remove the Pin entity associated with the annotation */
-            // persistentDataService.removePinEntity(travelPins[travelPins.indexOf(customAnnotation.pin)!])
-            // travelPins.removeAtIndex(travelPins.indexOf(customAnnotation.pin)!)
-            
-            
-            // Causes crash ---
-            //travelPins.removeAtIndex(travelPins.indexOf(customAnnotation.pin)!)
-            //persistentDataService.removePinEntity(customAnnotation.pin)
-            // -------------------------------------------------------------
-            
             CoreDataStack.sharedInstance().saveContext()
             
-            /* Remove the annotation from the map */
-            mapView.removeAnnotation(view.annotation!)
-            
-            
-            /*
-            print("Checking for equality ... ")
-            for item in travelPins {
-                print("looping ...")
-                
-                if item.latitude == focusCoordinate.latitude && item.longitude == focusCoordinate.longitude {
-                    print("It's a match!")
-                    
-                    print(travelPins[travelPins.indexOf(item)!])
-                    
-                    persistentDataService.removePinEntity(travelPins[travelPins.indexOf(item)!])
-                    
-                    travelPins.removeAtIndex(travelPins.indexOf(item)!)
-                    
-                    // self.coreDataStack.saveContext()
-                    CoreDataStack.sharedInstance().saveContext()
-                    
-                    /* Remove the annotation from the map */
-                    mapView.removeAnnotation(view.annotation!)
-                    
-                }
- 
-                
-                /*
-                if (item.latitude as! Double) == ((view.annotation?.coordinate.latitude)! as Double) {
-                    print("hello")
-                    
-                    print(travelPins.indexOf(item))
-                    
-                    travelPins.removeAtIndex(travelPins.indexOf(item)!)
-                    self.coreDataStack.saveContext()
-                } */
-            }
-            */
-
-            
-        } else {                        
-            // segue: ToPhotoAlbum
+        } else {
             performSegueWithIdentifier("ToPhotoAlbum", sender: self)
         }
     }

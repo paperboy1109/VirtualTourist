@@ -15,12 +15,9 @@ class CustomPinAnnotation: NSObject, MKAnnotation {
     // Conform to the MKAnnotation protocol
     var title: String?
     var subtitle: String?
+    
     var coordinate: CLLocationCoordinate2D {
-        
-        return CLLocationCoordinate2D(
-            latitude: pin.latitude as! Double,
-            longitude: pin.longitude as! Double
-        )
+        return CLLocationCoordinate2D( latitude: pin.latitude as! Double, longitude: pin.longitude as! Double)
     }
     
     init(pin: Pin, title: String?, subtitle: String?) {
