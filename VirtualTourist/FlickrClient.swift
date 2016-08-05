@@ -187,7 +187,7 @@ class FlickrClient: NSObject {
                         
                         for index in 0...(randomPhotoIndices.count-1) {
                             
-                            /* Defensive coding in case the image dictionaries to not match the expected format */
+                            /* Defensive coding in case the image dictionaries do not match the expected format */
                             
                             guard let imageUrlString = imageDictionaries[randomPhotoIndices[index]][FlickrClient.Constants.FlickrResponseKeys.MediumURL] as? String else {
                                 sendError(FlickrClient.Constants.FlickrResponseKeys.MediumURL, imageDictionary: imageDictionaries[randomPhotoIndices[index]])

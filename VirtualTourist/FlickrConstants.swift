@@ -51,7 +51,7 @@ extension FlickrClient {
             // static let GalleryID = "5704-72157622566655097"
             static let MediumURL = "url_m"
             static let UseSafeSearch = "1" // 1 is for safe
-            static let MaxPerPage = "500"
+            static let MaxPerPage = "250" // geo queries will only return 250 results per page, otherwise the max is 500
         }
         
         // MARK: Flickr Response Keys

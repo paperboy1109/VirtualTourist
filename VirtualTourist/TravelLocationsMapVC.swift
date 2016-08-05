@@ -349,7 +349,7 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         NSUserDefaults.standardUserDefaults().synchronize()
         
         let flotsam = NSUserDefaults.standardUserDefaults().valueForKey(latitudeKey) as? Double
-        print("\n\nHere is the value for latitudeKey: \(flotsam)")
+        print("Here is the value for latitudeKey: \(flotsam)")
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {

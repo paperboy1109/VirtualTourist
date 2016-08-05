@@ -26,7 +26,7 @@ class PhotoAlbumVC: UIViewController {
     var locationHasStoredPhotos = false
     
     let maxPhotos = 18
-    var maxFlickrPhotoPageNumber = 1    
+    var maxFlickrPhotoPageNumber = 1
     var targetFlickrPhotoPage = 1
     
     // MARK: - Outlets
@@ -77,16 +77,19 @@ class PhotoAlbumVC: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        print("Here is the (custom) map annotation: ")
+        print("\nHere is the (custom) map annotation: ")
         print(self.mapAnnotation)
         print(self.mapAnnotation.title)
         print(self.mapAnnotation.pin)
+        print("Here is the latitude and longitude, respectively: ")
+        print(self.mapAnnotation.pin.latitude)
+        print(self.mapAnnotation.pin.longitude)
         
         // For debugging only ---
         let flotsam = fetchedResultsController.fetchedObjects
         print("\nHere is flotsam: ")
         print(flotsam)
-        print("Here is the number of photos that were returnded: \(flotsam?.count)")
+        print("Here is the number of photos that were returnded by the fetched results controller: \(flotsam?.count)")
         print(fetchedResultsController.sections?.count)
         // ---------------------------------------------
         
@@ -97,7 +100,40 @@ class PhotoAlbumVC: UIViewController {
         }
         
         if !locationHasStoredPhotos {
+            
             print("New photos need to be downloaded from flickr")
+            
+            /*
+            loadNewImages(targetFlickrPhotoPage) { (newPhotoArray, error, errorDesc) in
+                
+                print("(loadNewImages closure) Here is the maximum page number for the flickr data: \(self.maxFlickrPhotoPageNumber)")
+                
+                if !error {
+                    
+                    print("Here is newPhotoArray:")
+                    print(newPhotoArray)
+                    
+                    /*
+                     self.totalAvailableNewPhotos = (newPhotoArray?.count)!
+                     
+                     self.newTouristPhotos.removeAll()
+                     self.newTouristPhotos = newPhotoArray!
+                     
+                     performUIUpdatesOnMain() {
+                     self.flickrCollectionView.reloadData()
+                     } */
+                }
+            }*/
+            
+            
+            // Get images according to location
+            downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
+                
+                if !error {
+                    print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
+                    print(newPhotoArray)
+                }
+            }
         }
     }
     
@@ -128,6 +164,30 @@ class PhotoAlbumVC: UIViewController {
                 completionHandlerForloadNewImages(newPhotoArray: nil, error: true, errorDesc: "Unable to return new images")
             }
             
+        }
+        
+    }
+    
+    func downloadNewImages(targetPageNumber: Int, maxPhotos: Int, completionHandlerForDownloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
+        
+        if let longitudeForFlickrPhotos = mapAnnotation.pin.longitude, latitudeForFlickrPhotos = mapAnnotation.pin.latitude {
+            
+            let boundingBoxCorners = FlickrClient.sharedInstance().boundingBoxAsString(longitudeForFlickrPhotos, latitude: latitudeForFlickrPhotos)
+            
+            FlickrClient.sharedInstance().getNewPhotoArrayWithConstraints(boundingBoxCorners, targetPageNumber: targetPageNumber, maxPhotos: maxPhotos) { (newPhotoArray, pageTotal, error, errorDesc) in
+                
+                if !error {
+                    
+                    if let newMaxFlickrPhotoPages = pageTotal {
+                        print(newMaxFlickrPhotoPages)
+                        self.maxFlickrPhotoPageNumber = newMaxFlickrPhotoPages
+                    }
+                    
+                    completionHandlerForDownloadNewImages(newPhotoArray: newPhotoArray, error: false, errorDesc: nil)
+                } else {
+                    completionHandlerForDownloadNewImages(newPhotoArray: nil, error: true, errorDesc: "Unable to return new images")
+                }
+            }
         }
         
     }
@@ -172,10 +232,10 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         // TODO: Implement the fetched results controller
         // Use the Fetched Results Controller
         /*
-        print("in collectionView(_:numberOfItemsInSection)")
-        let sectionInfo = fetchedResultsController.sections![section]
-        print("number Of Cells: \(sectionInfo.numberOfObjects)")
-        return sectionInfo.numberOfObjects */
+         print("in collectionView(_:numberOfItemsInSection)")
+         let sectionInfo = fetchedResultsController.sections![section]
+         print("number Of Cells: \(sectionInfo.numberOfObjects)")
+         return sectionInfo.numberOfObjects */
     }
     
     
@@ -196,7 +256,7 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         print("in collectionView(_:didSelectItemAtIndexPath)")
         
         print("Cell at index path \(indexPath) was tapped ")
-
+        
         
     }
     
