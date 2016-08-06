@@ -82,8 +82,8 @@
 		4E3CE6C11D3EB7D60020F6EC /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
-				4E5F4C071D53DB9C00F28737 /* Utils */,
 				4E3CE6C21D3EB7D60020F6EC /* AppDelegate.swift */,
+				4E5F4C071D53DB9C00F28737 /* Utils */,
 				4E3D3DF71D3F2284007C4B6C /* Services */,
 				4E3CE6DA1D3EBD4C0020F6EC /* Model */,
 				4E3CE6D71D3EB8490020F6EC /* Assets */,

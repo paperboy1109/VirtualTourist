@@ -128,8 +128,38 @@
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="132" height="132"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kRi-Iy-ta7">
+                                                    <rect key="frame" x="10" y="10" width="112" height="112"/>
+                                                </imageView>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="yPg-1a-MHX">
+                                                    <rect key="frame" x="48" y="48" width="37" height="37"/>
+                                                </activityIndicatorView>
+                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="kRi-Iy-ta7" firstAttribute="leading" secondItem="7v7-az-noB" secondAttribute="leadingMargin" constant="2" id="6Fu-NG-0Ph"/>
+                                            <constraint firstItem="yPg-1a-MHX" firstAttribute="leading" secondItem="7v7-az-noB" secondAttribute="leadingMargin" constant="20" id="9d2-7l-jfV"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="yPg-1a-MHX" secondAttribute="trailing" constant="20" id="E6z-tL-J6o"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="kRi-Iy-ta7" secondAttribute="bottom" constant="2" id="Eax-dX-JZo"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="kRi-Iy-ta7" secondAttribute="trailing" constant="2" id="HPE-va-9nf"/>
+                                            <constraint firstItem="yPg-1a-MHX" firstAttribute="centerY" secondItem="kRi-Iy-ta7" secondAttribute="centerY" id="LV5-Sq-PeS"/>
+                                            <constraint firstItem="yPg-1a-MHX" firstAttribute="height" secondItem="kRi-Iy-ta7" secondAttribute="height" multiplier="1:3" id="P4b-1a-MJF"/>
+                                            <constraint firstItem="yPg-1a-MHX" firstAttribute="centerX" secondItem="kRi-Iy-ta7" secondAttribute="centerX" id="RK3-yy-KEG"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="yPg-1a-MHX" secondAttribute="bottom" constant="20" id="TE9-V4-n1F"/>
+                                            <constraint firstItem="kRi-Iy-ta7" firstAttribute="top" secondItem="7v7-az-noB" secondAttribute="topMargin" constant="2" id="Tm1-Se-AVQ"/>
+                                            <constraint firstItem="yPg-1a-MHX" firstAttribute="width" secondItem="kRi-Iy-ta7" secondAttribute="width" multiplier="1:3" id="gJc-2A-FBW"/>
+                                            <constraint firstItem="yPg-1a-MHX" firstAttribute="top" secondItem="7v7-az-noB" secondAttribute="topMargin" constant="20" id="zTO-39-EuT"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="9d2-7l-jfV"/>
+                                                <exclude reference="E6z-tL-J6o"/>
+                                                <exclude reference="TE9-V4-n1F"/>
+                                                <exclude reference="zTO-39-EuT"/>
+                                            </mask>
+                                        </variation>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>

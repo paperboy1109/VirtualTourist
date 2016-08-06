@@ -18,6 +18,8 @@ class PhotoAlbumVC: UIViewController {
     
     var mapAnnotation: CustomPinAnnotation!
     
+    var newTouristPhotos: [NewPhoto] = []
+    
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
     var updatedIndexPaths: [NSIndexPath]!
@@ -132,6 +134,15 @@ class PhotoAlbumVC: UIViewController {
                 if !error {
                     print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
                     print(newPhotoArray)
+                    
+                    if !self.newTouristPhotos.isEmpty {
+                        self.newTouristPhotos.removeAll()
+                    }
+                    
+                    self.newTouristPhotos = newPhotoArray!
+                    print("Here is newPhotoArray:")
+                    print(newPhotoArray)
+                    print(newPhotoArray?.count)
                 }
             }
         }
