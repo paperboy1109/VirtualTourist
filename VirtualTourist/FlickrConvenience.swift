@@ -14,6 +14,8 @@ extension FlickrClient {
     
     func getNewPhotoArrayWithConstraints(locationParameterKey: String, targetPageNumber: Int, maxPhotos: Int, completionHandlerForGetNewPhotoArrayWithConstraints: (newPhotoArray: [NewPhoto]?, pageTotal:Int?, error: Bool, errorDesc: String?) -> Void) {
         
+        print("\ngetNewPhotoArrayWithConstraints called")
+        
         // Set method parameters
         let methodParameters: [String: String!] = [
             FlickrClient.Constants.FlickrParameterKeys.Method: FlickrClient.Constants.FlickrParameterValues.SearchMethod,
@@ -162,7 +164,7 @@ extension FlickrClient {
     
     func isCoordinateValid(value: NSNumber, forRange: (Double, Double)) -> Bool {
         
-        guard value.doubleValue.isNaN else {
+        guard !value.doubleValue.isNaN else {
             return false
         }
         

@@ -170,9 +170,14 @@ class PhotoAlbumVC: UIViewController {
     
     func downloadNewImages(targetPageNumber: Int, maxPhotos: Int, completionHandlerForDownloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
         
+        print("\ndownloadNewImages called")
+        
         if let longitudeForFlickrPhotos = mapAnnotation.pin.longitude, latitudeForFlickrPhotos = mapAnnotation.pin.latitude {
             
             let boundingBoxCorners = FlickrClient.sharedInstance().boundingBoxAsString(longitudeForFlickrPhotos, latitude: latitudeForFlickrPhotos)
+            
+            print("Here are the bounding box corners: ")
+            print(boundingBoxCorners)
             
             FlickrClient.sharedInstance().getNewPhotoArrayWithConstraints(boundingBoxCorners, targetPageNumber: targetPageNumber, maxPhotos: maxPhotos) { (newPhotoArray, pageTotal, error, errorDesc) in
                 

@@ -69,7 +69,7 @@ class FlickrClient: NSObject {
             }
             
             // For debugging only
-            print("*** Here is the parsed result ***")
+            print("\n(returnImageArrayFromFlickr)*** Here is the parsed result: ")
             print("muted")
             // print(parsedResult)
             
