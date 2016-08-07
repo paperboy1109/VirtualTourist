@@ -41,6 +41,8 @@ class PhotoAlbumVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        deleteAllPhotoEntities()
+        
         /* Configure the map */
         var mapRegion = MKCoordinateRegion()
         var mapSpan = MKCoordinateSpan()
@@ -143,6 +145,21 @@ class PhotoAlbumVC: UIViewController {
                     print("Here is newPhotoArray:")
                     print(newPhotoArray)
                     print(newPhotoArray?.count)
+                    
+                    // self.sharedContext.insertObject(<#T##object: NSManagedObject##NSManagedObject#>)
+                    for _ in self.newTouristPhotos {
+                        let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
+                        newPhotoEntity.pin = self.mapAnnotation.pin
+                    }
+                    CoreDataStack.sharedInstance().saveContext()
+                    
+                    // For debugging only ---
+                    let jetsam = self.fetchedResultsController.fetchedObjects
+                    print("\nHere is jetsam: ")
+                    print(jetsam)
+                    print("Here is the number of photos that were returnded by the fetched results controller: \(jetsam?.count)")
+                    print(self.fetchedResultsController.sections?.count)
+                    // ---------------------------------------------
                 }
             }
         }
@@ -208,6 +225,23 @@ class PhotoAlbumVC: UIViewController {
         
     }
     
+    func deleteAllPhotoEntities() {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        do {
+            
+            let allPhotos = try sharedContext.executeFetchRequest(fetchRequest) as! [Photo]
+            
+            for item in allPhotos {
+                sharedContext.deleteObject(item)
+            }
+            
+        } catch {
+            fatalError("Unable to delete Photo entities")
+        }
+    }
+    
     // MARK: - NSFetchedResultsController
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
@@ -231,27 +265,27 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         
         // Filler code
-        return 1
+        //return 1
         
         // TODO: Implement the fetched results controller
         
         // Use the Fetched Results Controller
-        //print("in numberOfSectionsInCollectionView()")
-        //return self.fetchedResultsController.sections!.count ?? 0
+        print("in numberOfSectionsInCollectionView()")
+        return self.fetchedResultsController.sections!.count ?? 0
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         // Filler code
-        return 1
+        //return 1
         
         // TODO: Implement the fetched results controller
         // Use the Fetched Results Controller
-        /*
+        
          print("in collectionView(_:numberOfItemsInSection)")
          let sectionInfo = fetchedResultsController.sections![section]
          print("number Of Cells: \(sectionInfo.numberOfObjects)")
-         return sectionInfo.numberOfObjects */
+         return sectionInfo.numberOfObjects 
     }
     
     

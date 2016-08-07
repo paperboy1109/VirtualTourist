@@ -47,4 +47,22 @@ public class PersistentDataService {
         
     }
     
+    func deleteAllPhotoEntities() {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        do {
+            let results = try managedObjectContext.executeFetchRequest(fetchRequest) as! [Photo]
+            for item in results {
+                managedObjectContext.deleteObject(item)
+            }
+            
+            let photosCount = managedObjectContext.countForFetchRequest(fetchRequest, error: nil)
+            print("Total photos in the data store after clean up: \(photosCount)")
+        }
+        catch {
+            fatalError("Error deleting persisted Photo entities")
+        }
+    }
+    
 }
