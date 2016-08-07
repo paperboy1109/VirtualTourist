@@ -190,6 +190,7 @@
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="Vch-JM-Amr" id="jTu-Q7-EwG"/>
+                        <outlet property="flowLayout" destination="yXY-3C-mmG" id="fc3-QO-GlL"/>
                         <outlet property="mapView" destination="mze-jS-GHX" id="YOw-CI-fK7"/>
                     </connections>
                 </viewController>

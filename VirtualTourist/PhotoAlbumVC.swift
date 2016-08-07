@@ -35,6 +35,7 @@ class PhotoAlbumVC: UIViewController {
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var flowLayout: UICollectionViewFlowLayout!
     
     // MARK: - Lifecycle
     
@@ -81,6 +82,13 @@ class PhotoAlbumVC: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        /* Configure the collection view cell size */
+        let space: CGFloat = 1.0
+        let dimension = (view.frame.size.width - (2*space)) / 3.0
+        
+        flowLayout.minimumInteritemSpacing = 0.0
+        flowLayout.itemSize = CGSizeMake(dimension, dimension)
         
         print("\nHere is the (custom) map annotation: ")
         print(self.mapAnnotation)
@@ -311,7 +319,7 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                         
                         //photoFromfetchedResultsController.image = imageData
                         //CoreDataStack.sharedInstance().saveContext()
-                        
+                        //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
                     }
                     
                 }
