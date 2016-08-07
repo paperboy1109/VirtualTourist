@@ -2,7 +2,7 @@
 //  Photo+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Daniel J Janiak on 7/19/16.
+//  Created by Daniel J Janiak on 8/7/16.
 //  Copyright © 2016 Daniel J Janiak. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,6 +15,7 @@ import CoreData
 extension Photo {
 
     @NSManaged var image: NSData?
-    @NSManaged var pin: NSManagedObject?
+    @NSManaged var id: NSNumber?
+    @NSManaged var pin: Pin?
 
 }

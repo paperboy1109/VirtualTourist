@@ -41,6 +41,7 @@ class PhotoAlbumVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Force the image download from flickr to occur
         deleteAllPhotoEntities()
         
         /* Configure the map */
@@ -107,29 +108,6 @@ class PhotoAlbumVC: UIViewController {
             
             print("New photos need to be downloaded from flickr")
             
-            /*
-            loadNewImages(targetFlickrPhotoPage) { (newPhotoArray, error, errorDesc) in
-                
-                print("(loadNewImages closure) Here is the maximum page number for the flickr data: \(self.maxFlickrPhotoPageNumber)")
-                
-                if !error {
-                    
-                    print("Here is newPhotoArray:")
-                    print(newPhotoArray)
-                    
-                    /*
-                     self.totalAvailableNewPhotos = (newPhotoArray?.count)!
-                     
-                     self.newTouristPhotos.removeAll()
-                     self.newTouristPhotos = newPhotoArray!
-                     
-                     performUIUpdatesOnMain() {
-                     self.flickrCollectionView.reloadData()
-                     } */
-                }
-            }*/
-            
-            
             // Get images according to location
             downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
                 
@@ -146,10 +124,10 @@ class PhotoAlbumVC: UIViewController {
                     print(newPhotoArray)
                     print(newPhotoArray?.count)
                     
-                    // self.sharedContext.insertObject(<#T##object: NSManagedObject##NSManagedObject#>)
-                    for _ in self.newTouristPhotos {
+                    for item in self.newTouristPhotos {
                         let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
                         newPhotoEntity.pin = self.mapAnnotation.pin
+                        newPhotoEntity.id = item.id! as NSNumber
                     }
                     CoreDataStack.sharedInstance().saveContext()
                     
@@ -282,10 +260,10 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         // TODO: Implement the fetched results controller
         // Use the Fetched Results Controller
         
-         print("in collectionView(_:numberOfItemsInSection)")
-         let sectionInfo = fetchedResultsController.sections![section]
-         print("number Of Cells: \(sectionInfo.numberOfObjects)")
-         return sectionInfo.numberOfObjects 
+        print("in collectionView(_:numberOfItemsInSection)")
+        let sectionInfo = fetchedResultsController.sections![section]
+        print("number Of Cells: \(sectionInfo.numberOfObjects)")
+        return sectionInfo.numberOfObjects
     }
     
     
@@ -293,10 +271,56 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         
         print("in collectionView(_:cellForItemAtIndexPath)")
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as UICollectionViewCell
+        // let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as UICollectionViewCell
         
-        // let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! DeleteCellsCollectionViewCell
-        // cell.imageView.backgroundColor = UIColor.blueColor()
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as! TouristPhotoCell
+        cell.touristPhotoCellImageView.backgroundColor = UIColor.blueColor()
+        cell.touristPhotoCellImageView.image = nil
+        
+        let photoFromfetchedResultsController = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        
+        print("Does the photo entity have a photo?")
+        print(photoFromfetchedResultsController.image)
+        
+        if let image = photoFromfetchedResultsController.image {
+            let imageUIImage = UIImage(data: image)
+            cell.touristPhotoCellImageView.image = imageUIImage
+        }
+        
+        print("Does the cell have a photo?")
+        print(cell.touristPhotoCellImageView.image)
+        
+        /* When the photo entity does not have photo data, download the image from flickr */
+        if cell.touristPhotoCellImageView.image == nil {
+            
+            let newPhotoIndex = newTouristPhotos.indexOf { $0.id == photoFromfetchedResultsController.id }
+            
+            if newPhotoIndex == nil {
+                print("No photo index found!***")
+            }
+            
+            FlickrClient.sharedInstance().returnImageFromFlickrByURL(newTouristPhotos[newPhotoIndex!].url!) { (imageData, error, errorDesc) in
+                
+                if !error {
+                    
+                    if let cellImage = UIImage(data: imageData!) {
+                        
+                        performUIUpdatesOnMain(){
+                            cell.touristPhotoCellImageView.image = cellImage
+                        }
+                        
+                        //photoFromfetchedResultsController.image = imageData
+                        //CoreDataStack.sharedInstance().saveContext()
+                        
+                    }
+                    
+                }
+            }
+        } else {
+            print("No need to download a photo")
+        }
+        
+        
         
         return cell
     }

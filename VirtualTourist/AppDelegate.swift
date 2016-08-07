@@ -74,6 +74,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         checkDataStore()
         
+        configureMap()
+        
         return true
     }
     

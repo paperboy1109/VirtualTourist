@@ -204,7 +204,7 @@ class FlickrClient: NSObject {
                                 return
                             }
                             
-                            /* Casting to an Int is not working */
+                            /* Casting to an Int is not working in the guard statement */
                             if let newPhotoID = Int(imageID) {
                                 let newPhoto = NewPhoto(url: imageUrlString, title: imageTitle, id: newPhotoID)
                                 newPhotoArrayToReturn.append(newPhoto)
