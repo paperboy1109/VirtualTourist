@@ -19,6 +19,7 @@ class PhotoAlbumVC: UIViewController {
     var mapAnnotation: CustomPinAnnotation!
     
     var newTouristPhotos: [NewPhoto] = []
+    var setOfPhotosToSave: Set<NSData> = []
     
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
@@ -43,6 +44,7 @@ class PhotoAlbumVC: UIViewController {
         super.viewDidLoad()
         
         // Force the image download from flickr to occur
+        print("Removing all photo entities ... ")
         deleteAllPhotoEntities()
         
         /* Configure the map */
@@ -133,17 +135,34 @@ class PhotoAlbumVC: UIViewController {
                     print(newPhotoArray?.count)
                     
                     // Thread safety
-                    print("\nWhich thread am I on?  Main thread? ")
+                    print("\nWhich thread am I on?  Main thread? The current thread is: \(NSThread.currentThread())")
                     print(NSThread.isMainThread())
                     
                     performUIUpdatesOnMain(){
+                        
+                        print("\n(performUIUpdatesOnMain)Which thread am I on?  Main thread? \(NSThread.isMainThread()).  The thread is \(NSThread.currentThread())")
+                        
+                        //                        for item in self.newTouristPhotos {
+                        //                            let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
+                        //                            newPhotoEntity.pin = self.mapAnnotation.pin
+                        //                            newPhotoEntity.id = item.id! as NSNumber
+                        //                        }
+                        //                        CoreDataStack.sharedInstance().saveContext()
+                    }
+                    
+                    self.sharedContext.performBlock() {
+                        
+                        print("\n(performUIUpdatesOnMain)Which thread am I on?  Main thread? \(NSThread.isMainThread()).  The thread is \(NSThread.currentThread())")
+                        
                         for item in self.newTouristPhotos {
                             let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
                             newPhotoEntity.pin = self.mapAnnotation.pin
                             newPhotoEntity.id = item.id! as NSNumber
                         }
                         CoreDataStack.sharedInstance().saveContext()
+                        
                     }
+                    
                     
                     // For debugging only ---
                     let jetsam = self.fetchedResultsController.fetchedObjects
@@ -154,6 +173,17 @@ class PhotoAlbumVC: UIViewController {
                     // ---------------------------------------------
                 }
             }
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        print("View will dissappear called")
+        
+        sharedContext.performBlock() {
+            print("(viewWillDisappear) Saving photos ...  \nThe current thread is \(NSThread.currentThread())")
+            self.savePhotosToDataStore(self.setOfPhotosToSave)
         }
     }
     
@@ -234,9 +264,40 @@ class PhotoAlbumVC: UIViewController {
         }
     }
     
+    func savePhotosToDataStore(newPhotoDataSet: Set<NSData>) {
+        print("\nSaving \(newPhotoDataSet.count) items to the data store")
+        
+        //TODO: Empty out the data store here?
+        
+        for item in newPhotoDataSet {
+            let photoEntityToSave = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: sharedContext) as! Photo
+            photoEntityToSave.image = item
+            photoEntityToSave.pin = mapAnnotation.pin
+        }
+        
+        CoreDataStack.sharedInstance().saveContext()
+    }
+    
+    // MARK: - Actions
+    
     @IBAction func newCollectionTapped(sender: AnyObject) {
         
         print("The New Collection button was tapped")
+        print("The index for the last page of photos is: \(maxFlickrPhotoPageNumber)")
+        
+        if targetFlickrPhotoPage < maxPhotos {
+            targetFlickrPhotoPage = targetFlickrPhotoPage + 1
+        } else {
+            targetFlickrPhotoPage = 1
+        }
+        
+        downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
+            
+            if !error {
+                print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
+                print(newPhotoArray)
+            }
+        }
     }
     
     
@@ -331,10 +392,12 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                             //photoFromfetchedResultsController.image = imageData
                             //CoreDataStack.sharedInstance().saveContext()
                             //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
-
+                            
+                            self.setOfPhotosToSave.insert(imageData!)
+                            
                         }
                         
-                                            }
+                    }
                     
                 }
             }
@@ -342,7 +405,8 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
             print("No need to download a photo")
         }
         
-        
+        print("(cellForItemAtIndexPath) The number of photos to be saved is: ")
+        print(setOfPhotosToSave.count)
         
         return cell
     }
@@ -352,7 +416,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         print("in collectionView(_:didSelectItemAtIndexPath)")
         
         print("Cell at index path \(indexPath) was tapped ")
-        
         
     }
     
