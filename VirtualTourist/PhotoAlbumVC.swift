@@ -96,7 +96,7 @@ class PhotoAlbumVC: UIViewController {
         print(self.mapAnnotation)
         print(self.mapAnnotation.title)
         print(self.mapAnnotation.pin)
-        print("Here is the latitude and longitude, respectively: ")
+        print("Here is the latitude and the longitude, respectively: ")
         print(self.mapAnnotation.pin.latitude)
         print(self.mapAnnotation.pin.longitude)
         
@@ -179,12 +179,12 @@ class PhotoAlbumVC: UIViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        print("View will dissappear called")
-        
-        sharedContext.performBlock() {
-            print("(viewWillDisappear) Saving photos ...  \nThe current thread is \(NSThread.currentThread())")
-            self.savePhotosToDataStore(self.setOfPhotosToSave)
-        }
+        //        print("View will dissappear called")
+        //
+        //        sharedContext.performBlock() {
+        //            print("(viewWillDisappear) Saving photos ...  \nThe current thread is \(NSThread.currentThread())")
+        //            self.savePhotosToDataStore(self.setOfPhotosToSave)
+        //        }
     }
     
     // MARK: - Helpers
@@ -306,7 +306,9 @@ class PhotoAlbumVC: UIViewController {
     lazy var fetchedResultsController: NSFetchedResultsController = {
         
         let fetchRequest = NSFetchRequest(entityName: "Photo")
-        fetchRequest.sortDescriptors = []
+        let sortByID = NSSortDescriptor(key: "id", ascending: true)
+        fetchRequest.sortDescriptors = [sortByID]
+        fetchRequest.predicate = NSPredicate(format: "pin = %@", self.mapAnnotation.pin)
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
@@ -358,21 +360,35 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         cell.touristPhotoCellImageView.backgroundColor = UIColor.blueColor()
         cell.touristPhotoCellImageView.image = nil
         
-        let photoFromfetchedResultsController = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        print("Does the photo entity have a photo?")
-        print(photoFromfetchedResultsController.image)
+        let photoFromfetchedResultsController = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
         
-        if let image = photoFromfetchedResultsController.image {
-            let imageUIImage = UIImage(data: image)
-            cell.touristPhotoCellImageView.image = imageUIImage
+        self.sharedContext.performBlock() {
+            //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
         }
         
+        
+        //print("Does the photo entity have a photo?")
+        //print(photoFromfetchedResultsController.image)
+        print("Does the photo entity have an image ID?")
+        print(photoFromfetchedResultsController.id)
+        
+        /*
+        if let image = photoFromfetchedResultsController.image {
+            let imageUIImage = UIImage(data: image)
+            performUIUpdatesOnMain() {
+                cell.touristPhotoCellImageView.image = imageUIImage
+            }
+        }*/
+        
+        
         print("Does the cell have a photo?")
-        print(cell.touristPhotoCellImageView.image)
+        print("\(cell.touristPhotoCellImageView.image == nil)")
         
         /* When the photo entity does not have photo data, download the image from flickr */
-        if cell.touristPhotoCellImageView.image == nil {
+        // if cell.touristPhotoCellImageView.image == nil {
+        if photoFromfetchedResultsController.image == nil {
             
             let newPhotoIndex = newTouristPhotos.indexOf { $0.id == photoFromfetchedResultsController.id }
             
@@ -388,14 +404,35 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                         
                         performUIUpdatesOnMain(){
                             cell.touristPhotoCellImageView.image = cellImage
-                            
-                            //photoFromfetchedResultsController.image = imageData
-                            //CoreDataStack.sharedInstance().saveContext()
-                            //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
-                            
-                            self.setOfPhotosToSave.insert(imageData!)
-                            
                         }
+                        
+                        self.setOfPhotosToSave.insert(imageData!)
+                        
+                        self.sharedContext.performBlock() {
+                            
+                            // self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: false)
+                            photoFromfetchedResultsController.image = imageData
+                            
+                            CoreDataStack.sharedInstance().saveContext()
+                            
+                            //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
+                        }
+                        
+                        /*
+                         self.sharedContext.performBlock() {
+                         
+                         let photoToUpdate = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+                         self.sharedContext.refreshObject(photoToUpdate, mergeChanges: true)
+                         
+                         print("returnImageByURL saving ... Current thread: \(NSThread.currentThread())")
+                         // photoFromfetchedResultsController.image = imageData
+                         photoToUpdate.image = imageData
+                         // CoreDataStack.sharedInstance().saveContext()
+                         //self.sharedContext.refreshObject(photoToUpdate, mergeChanges: true)
+                         
+                         CoreDataStack.sharedInstance().saveContext()
+                         
+                         }*/
                         
                     }
                     
@@ -407,6 +444,16 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         
         print("(cellForItemAtIndexPath) The number of photos to be saved is: ")
         print(setOfPhotosToSave.count)
+        
+        
+        if let image = photoFromfetchedResultsController.image {
+            let imageUIImage = UIImage(data: image)
+            performUIUpdatesOnMain() {
+                cell.touristPhotoCellImageView.image = imageUIImage
+            }            
+        }
+        
+        
         
         return cell
     }
