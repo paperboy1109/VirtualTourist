@@ -132,12 +132,18 @@ class PhotoAlbumVC: UIViewController {
                     print(newPhotoArray)
                     print(newPhotoArray?.count)
                     
-                    for item in self.newTouristPhotos {
-                        let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
-                        newPhotoEntity.pin = self.mapAnnotation.pin
-                        newPhotoEntity.id = item.id! as NSNumber
+                    // Thread safety
+                    print("\nWhich thread am I on?  Main thread? ")
+                    print(NSThread.isMainThread())
+                    
+                    performUIUpdatesOnMain(){
+                        for item in self.newTouristPhotos {
+                            let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
+                            newPhotoEntity.pin = self.mapAnnotation.pin
+                            newPhotoEntity.id = item.id! as NSNumber
+                        }
+                        CoreDataStack.sharedInstance().saveContext()
                     }
-                    CoreDataStack.sharedInstance().saveContext()
                     
                     // For debugging only ---
                     let jetsam = self.fetchedResultsController.fetchedObjects
@@ -228,6 +234,12 @@ class PhotoAlbumVC: UIViewController {
         }
     }
     
+    @IBAction func newCollectionTapped(sender: AnyObject) {
+        
+        print("The New Collection button was tapped")
+    }
+    
+    
     // MARK: - NSFetchedResultsController
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
@@ -315,12 +327,14 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                         
                         performUIUpdatesOnMain(){
                             cell.touristPhotoCellImageView.image = cellImage
+                            
+                            //photoFromfetchedResultsController.image = imageData
+                            //CoreDataStack.sharedInstance().saveContext()
+                            //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
+
                         }
                         
-                        //photoFromfetchedResultsController.image = imageData
-                        //CoreDataStack.sharedInstance().saveContext()
-                        //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
-                    }
+                                            }
                     
                 }
             }

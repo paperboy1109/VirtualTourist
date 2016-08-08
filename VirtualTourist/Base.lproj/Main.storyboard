@@ -9,6 +9,7 @@
     <customFonts key="customFonts">
         <mutableArray key="HelveticaNeue.ttc">
             <string>HelveticaNeue</string>
+            <string>HelveticaNeue</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -111,10 +112,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="mze-jS-GHX">
-                                <rect key="frame" x="0.0" y="72" width="600" height="128"/>
+                                <rect key="frame" x="0.0" y="72" width="600" height="119"/>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Vch-JM-Amr">
-                                <rect key="frame" x="0.0" y="208" width="600" height="384"/>
+                                <rect key="frame" x="0.0" y="199" width="600" height="358"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="yXY-3C-mmG">
                                     <size key="itemSize" width="132" height="132"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -167,24 +168,40 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gg7-xh-HwH">
+                                <rect key="frame" x="0.0" y="562" width="600" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="38" id="MOY-iR-kRx"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionTapped:" destination="d6S-V7-9Su" eventType="touchUpInside" id="j8N-ut-esn"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="gKV-fp-5jV" firstAttribute="top" secondItem="Gg7-xh-HwH" secondAttribute="bottom" id="1Sn-eO-n6w"/>
                             <constraint firstItem="mze-jS-GHX" firstAttribute="leading" secondItem="9x7-vf-LHm" secondAttribute="leading" id="4lh-rA-m8d"/>
+                            <constraint firstItem="Gg7-xh-HwH" firstAttribute="top" secondItem="Vch-JM-Amr" secondAttribute="bottom" constant="5" id="5gM-kO-QN2"/>
                             <constraint firstItem="Vch-JM-Amr" firstAttribute="width" secondItem="mze-jS-GHX" secondAttribute="width" id="7je-GX-0rW"/>
                             <constraint firstItem="mze-jS-GHX" firstAttribute="top" secondItem="8GW-V2-qbF" secondAttribute="bottom" constant="8" id="9NS-L5-VBH"/>
                             <constraint firstItem="Vch-JM-Amr" firstAttribute="top" secondItem="mze-jS-GHX" secondAttribute="bottom" constant="8" id="9wC-6e-BOI"/>
                             <constraint firstItem="Vch-JM-Amr" firstAttribute="height" secondItem="mze-jS-GHX" secondAttribute="height" multiplier="3:1" id="B2u-l6-x9K"/>
                             <constraint firstItem="Vch-JM-Amr" firstAttribute="leading" secondItem="9x7-vf-LHm" secondAttribute="leading" id="DgY-ZP-e90"/>
                             <constraint firstAttribute="trailing" secondItem="Vch-JM-Amr" secondAttribute="trailing" id="GkZ-Ov-dmQ"/>
+                            <constraint firstItem="Gg7-xh-HwH" firstAttribute="leading" secondItem="9x7-vf-LHm" secondAttribute="leading" id="HDP-s7-QwA"/>
                             <constraint firstItem="Vch-JM-Amr" firstAttribute="height" secondItem="mze-jS-GHX" secondAttribute="height" id="UyE-Vb-Mh0"/>
                             <constraint firstAttribute="trailing" secondItem="mze-jS-GHX" secondAttribute="trailing" id="ffr-ZU-UhY"/>
-                            <constraint firstItem="gKV-fp-5jV" firstAttribute="top" secondItem="Vch-JM-Amr" secondAttribute="bottom" constant="8" id="mnG-mY-U1o"/>
+                            <constraint firstItem="gKV-fp-5jV" firstAttribute="top" secondItem="Vch-JM-Amr" secondAttribute="bottom" constant="80" id="mnG-mY-U1o"/>
+                            <constraint firstAttribute="trailing" secondItem="Gg7-xh-HwH" secondAttribute="trailing" id="sXN-Ac-X9b"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="7je-GX-0rW"/>
                                 <exclude reference="UyE-Vb-Mh0"/>
+                                <exclude reference="mnG-mY-U1o"/>
                             </mask>
                         </variation>
                     </view>
