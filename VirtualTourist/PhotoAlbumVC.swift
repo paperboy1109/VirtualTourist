@@ -110,8 +110,6 @@ class PhotoAlbumVC: UIViewController {
         
         if !locationHasStoredPhotos && (mapAnnotation.pin != nil) {
             
-            print("New photos need to be downloaded from flickr")
-            
             downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
                 
                 if !error {
@@ -124,8 +122,6 @@ class PhotoAlbumVC: UIViewController {
                     
                     self.sharedContext.performBlock() {
                         
-                        print("\n(performUIUpdatesOnMain)Which thread am I on?  Main thread? \(NSThread.isMainThread()).  The thread is \(NSThread.currentThread())")
-                        
                         for item in self.newTouristPhotos {
                             let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
                             newPhotoEntity.pin = self.mapAnnotation.pin
@@ -137,8 +133,6 @@ class PhotoAlbumVC: UIViewController {
 
                 }
             }
-        } else {
-            print("\n(viewWillAppear) No initial download from flickr  ")
         }
     }
     
@@ -166,22 +160,14 @@ class PhotoAlbumVC: UIViewController {
     
     // MARK: - Helpers
     
+    /*
     func loadNewImages(targetPage: Int, completionHandlerForloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
         
         FlickrClient.sharedInstance().getRandomSubsetPhotoDataArrayFromFlickr(targetFlickrPhotoPage, maxPhotos: maxPhotos) { (newPhotoArray, pageTotal, error, errorDesc) in
             
-            print("\n\n (getRandomSubsetPhotoDataArrayFromFlickr closure) Here is newPhotoArray: ")
-            //print(newPhotoArray)
-            //print(newPhotoArray?.count)
-            print("muted")
-            
             if !error {
                 
-                print("Here is the page total: ")
-                print(pageTotal)
-                
                 if let newMaxFlickrPhotoPages = pageTotal {
-                    print(newMaxFlickrPhotoPages)
                     self.maxFlickrPhotoPageNumber = newMaxFlickrPhotoPages
                 }
                 
@@ -193,18 +179,13 @@ class PhotoAlbumVC: UIViewController {
             
         }
         
-    }
+    } */
     
     func downloadNewImages(targetPageNumber: Int, maxPhotos: Int, completionHandlerForDownloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
-        
-        print("\ndownloadNewImages called")
         
         if let longitudeForFlickrPhotos = mapAnnotation.pin!.longitude, latitudeForFlickrPhotos = mapAnnotation.pin!.latitude {
             
             let boundingBoxCorners = FlickrClient.sharedInstance().boundingBoxAsString(longitudeForFlickrPhotos, latitude: latitudeForFlickrPhotos)
-            
-            print("Here are the bounding box corners: ")
-            print(boundingBoxCorners)
             
             FlickrClient.sharedInstance().getNewPhotoArrayWithConstraints(boundingBoxCorners, targetPageNumber: targetPageNumber, maxPhotos: maxPhotos) { (newPhotoArray, pageTotal, error, errorDesc) in
                 
@@ -212,8 +193,8 @@ class PhotoAlbumVC: UIViewController {
                     
                     /* Update the page number of the last page of photo results in case it has changed since the first call to flickr */
                     if let newMaxFlickrPhotoPages = pageTotal {
-                        print("Here is the (updated) maximum number of photo pages")
-                        print(newMaxFlickrPhotoPages)
+                        //print("Here is the (updated) maximum number of photo pages")
+                        //print(newMaxFlickrPhotoPages)
                         self.maxFlickrPhotoPageNumber = newMaxFlickrPhotoPages
                     }
                     
@@ -244,7 +225,6 @@ class PhotoAlbumVC: UIViewController {
     }
     
     func savePhotosToDataStore(newPhotoDataSet: Set<NSData>) {
-        print("\nSaving \(newPhotoDataSet.count) items to the data store")
         
         for item in newPhotoDataSet {
             let photoEntityToSave = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: sharedContext) as! Photo
@@ -420,10 +400,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        
-        print("in collectionView(_:didSelectItemAtIndexPath)")
-        
-        print("Cell at index path \(indexPath) was tapped ")
         
         photoToDelete = fetchedResultsController.objectAtIndexPath(indexPath) as? Photo
         

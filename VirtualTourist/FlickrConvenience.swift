@@ -29,8 +29,6 @@ extension FlickrClient {
             FlickrClient.Constants.FlickrParameterKeys.BoundingBox: "\(locationParameterKey)"
             ]
         
-        // methodParameters[FlickrClient.Constants.FlickrParameterKeys.BoundingBox] = locationParameterKey
-        
         FlickrClient.sharedInstance().returnImageArrayFromFlickr(methodParameters) { (imageDataArray, pageTotal, error, errorDesc) in
             
             func sendError(responseKey: String, imageDictionary: [String: AnyObject]) {
@@ -91,6 +89,7 @@ extension FlickrClient {
         
     }
     
+    /*
     func searchFlickrForImagesForPage(targetPageNumber: Int, completionHandlerForSearchFlickrForImagesForPage: (imageDataArray: [[String:AnyObject]]?, pageTotal: Int?, error: Bool, errorDesc: String?) -> Void) {
         
         // Set method parameters
@@ -114,7 +113,7 @@ extension FlickrClient {
                 completionHandlerForSearchFlickrForImagesForPage(imageDataArray: nil, pageTotal: 1, error: true, errorDesc: errorDesc)
             }
         }
-    }
+    } */
     
     func searchFlickrByPageAtLocation(locationParameterKey: String, targetPageNumber: Int, completionHandlerForSearchFlickrByPageAtLocation: (imageDataArray: [[String:AnyObject]]?, pageTotal: Int?, error: Bool, errorDesc: String?) -> Void) {
         

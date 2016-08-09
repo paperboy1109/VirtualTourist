@@ -152,6 +152,7 @@ class FlickrClient: NSObject {
     
     // MARK: - Return an array of NewPhoto objects given contstraints on the (flickr) page number and the total number of objects
     
+    /*
     func getRandomSubsetPhotoDataArrayFromFlickr(targetPage: Int, maxPhotos: Int, completionHandlerForGetRandomSubsetPhotoDataArrayFromFlickr: (newPhotoArray: [NewPhoto]?, pageTotal:Int?, error: Bool, errorDesc: String?) -> Void) {
         
         print("\n\n\n ***** \n getRandomSubsetPhotoDataArrayFromFlickr called")
@@ -224,7 +225,7 @@ class FlickrClient: NSObject {
                 }
             }
         }
-    }
+    }*/
     
 
 }
