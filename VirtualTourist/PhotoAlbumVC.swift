@@ -47,8 +47,8 @@ class PhotoAlbumVC: UIViewController {
         super.viewDidLoad()
         
         // Force the image download from flickr to occur
-        print("Removing all photo entities ... ")
-        deleteAllPhotoEntities()
+        //print("Removing all photo entities ... ")
+        //deleteAllPhotoEntities()
         
         /* Configure the map */
         var mapRegion = MKCoordinateRegion()
@@ -388,7 +388,9 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         // let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as UICollectionViewCell
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as! TouristPhotoCell
-        cell.touristPhotoCellImageView.backgroundColor = UIColor.blueColor()
+        cell.touristPhotoCellActivityIndicator.hidden = false
+        cell.touristPhotoCellActivityIndicator.startAnimating()
+        cell.touristPhotoCellImageView.backgroundColor = UIColor.darkGrayColor() //UIColor.blueColor()
         cell.touristPhotoCellImageView.image = nil
         
         
@@ -484,6 +486,8 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         if let image = photoFromfetchedResultsController.image {
             let imageUIImage = UIImage(data: image)
             performUIUpdatesOnMain() {
+                cell.touristPhotoCellActivityIndicator.hidden = true
+                cell.touristPhotoCellActivityIndicator.stopAnimating()
                 cell.touristPhotoCellImageView.image = imageUIImage
             }
         }
