@@ -14,15 +14,7 @@ class TravelLocationsMapVC: UIViewController {
     
     // MARK: - Properties
     
-    // var coreDataStack = CoreDataStack()
-    // var managedObjectContext: NSManagedObjectContext!
     var sharedContext = CoreDataStack.sharedInstance().managedObjectContext
-    
-    var request: NSFetchRequest!
-    
-    // var focusAnnotation = MKPointAnnotation()
-    
-    // var focusCoordinate = CLLocationCoordinate2D()
     
     var selectedPin: CustomPinAnnotation?
     
@@ -73,9 +65,6 @@ class TravelLocationsMapVC: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        print("\nviewWillAppear (TravelLocationsMapVC) called")
-        print("The number of map annotations is: \(mapView.annotations.count)")
-        
         initialVerticalPosForMap = mapView.frame.origin.y
         
         if !isInEditMode {
@@ -89,14 +78,11 @@ class TravelLocationsMapVC: UIViewController {
         }
         
         loadStoredPins()
-        
-        print("The number of map annotations is: \(mapView.annotations.count)")
     }
     
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
         
         let navigationBackButton = UIBarButtonItem()
         navigationBackButton.title = "Ok"
@@ -111,8 +97,6 @@ class TravelLocationsMapVC: UIViewController {
     // MARK: - Actions
     
     @IBAction func editTapped(sender: AnyObject) {
-        //deleteAllPins()
-        print("edit tapped")
         
         if !isInEditMode {
             if mapView.frame.origin.y >= initialVerticalPosForMap {
@@ -136,8 +120,6 @@ class TravelLocationsMapVC: UIViewController {
     // MARK: - Helpers
     
     func setMapRegion() {
-        
-        // Set up the map
         
         let startingLatitude = NSUserDefaults.standardUserDefaults().valueForKey(latitudeKey) as? Double
         let startingLongitude = NSUserDefaults.standardUserDefaults().valueForKey(longitudeKey) as? Double
@@ -215,37 +197,13 @@ class TravelLocationsMapVC: UIViewController {
                 annotation.coordinate = newCoordinate
                 annotation.title = title
                 
-                // self.focusAnnotation = annotation
-                
-                // *** Use custom class ***
-                //self.mapView.addAnnotation(annotation)
-                //let newPin = Pin(entity: <#T##NSEntityDescription#>, insertIntoManagedObjectContext: <#T##NSManagedObjectContext?#>)
-                //let pinAnnotation = CustomPinAnnotation(pin: item, title: item.title, subtitle: nil)
-                //self.mapView.addAnnotation(pinAnnotation)
-                
                 /* Create a Pin entity, a custom annotation based on it, and add an annotation to the map */
                 print("Creating a new Pin entity .... ")
                 let pinAnnotation = self.saveNewPinAndCreateAnnotation(annotation)
                 self.mapView.addAnnotation(pinAnnotation)
                 print("This annotation was added to the map: ")
                 print(pinAnnotation.title)
-                
-                
-                
-                
-                /* Save the annotation using Core Data */
-                /*
-                 let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
-                 touristLocation.latitude = annotation.coordinate.latitude
-                 touristLocation.longitude = annotation.coordinate.longitude
-                 touristLocation.title = annotation.title
-                 
-                 self.coreDataStack.saveContext()
-                 */
-                
-                
-                
-                // self.savePin(annotation)
+
             }
             
             
@@ -253,23 +211,8 @@ class TravelLocationsMapVC: UIViewController {
         
     }
     
-    
-    func savePin(mapAnnotation: MKPointAnnotation) {
-        
-        // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
-        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.sharedContext) as! Pin
-        touristLocation.latitude = mapAnnotation.coordinate.latitude
-        touristLocation.longitude = mapAnnotation.coordinate.longitude
-        touristLocation.title = mapAnnotation.title
-        
-        //self.coreDataStack.saveContext()
-        CoreDataStack.sharedInstance().saveContext()
-        
-    }
-    
     func saveNewPinAndCreateAnnotation(mapAnnotation: MKPointAnnotation) -> CustomPinAnnotation {
         
-        // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
         let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.sharedContext) as! Pin
         touristLocation.latitude = mapAnnotation.coordinate.latitude
         touristLocation.longitude = mapAnnotation.coordinate.longitude
@@ -279,18 +222,6 @@ class TravelLocationsMapVC: UIViewController {
         let pinAnnotation = CustomPinAnnotation(pin: touristLocation, title: mapAnnotation.title, subtitle: nil)
         return pinAnnotation
         
-    }
-    
-    func deletePin(mapAnnotation: MKPointAnnotation) {
-        
-        // let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.coreDataStack.managedObjectContext) as! Pin
-        let touristLocation = NSEntityDescription.insertNewObjectForEntityForName("Pin", inManagedObjectContext: self.sharedContext) as! Pin
-        touristLocation.latitude = mapAnnotation.coordinate.latitude
-        touristLocation.longitude = mapAnnotation.coordinate.longitude
-        touristLocation.title = mapAnnotation.title
-        
-        // self.coreDataStack.saveContext()
-        CoreDataStack.sharedInstance().saveContext()
     }
     
     func deleteAllPins() {
@@ -305,14 +236,6 @@ class TravelLocationsMapVC: UIViewController {
         
         /* Get stored travel locations and display them on the map */
         travelPins = persistentDataService.getPinEntities()
-        
-        /*
-         for item in travelPins {
-         let annotation = MKPointAnnotation()
-         annotation.coordinate = CLLocationCoordinate2D(latitude: Double(item.latitude!), longitude: Double(item.longitude!))
-         annotation.title = item.title!
-         self.mapView.addAnnotation(annotation)
-         } */
         
         mapView.removeAnnotations(mapView.annotations)
         
