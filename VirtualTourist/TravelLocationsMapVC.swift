@@ -73,6 +73,9 @@ class TravelLocationsMapVC: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        print("\nviewWillAppear (TravelLocationsMapVC) called")
+        print("The number of map annotations is: \(mapView.annotations.count)")
+        
         initialVerticalPosForMap = mapView.frame.origin.y
         
         if !isInEditMode {
@@ -86,6 +89,8 @@ class TravelLocationsMapVC: UIViewController {
         }
         
         loadStoredPins()
+        
+        print("The number of map annotations is: \(mapView.annotations.count)")
     }
     
     // MARK: - Navigation
@@ -309,6 +314,8 @@ class TravelLocationsMapVC: UIViewController {
          self.mapView.addAnnotation(annotation)
          } */
         
+        mapView.removeAnnotations(mapView.annotations)
+        
         for item in travelPins {
             let pinAnnotation = CustomPinAnnotation(pin: item, title: item.title, subtitle: nil)
             self.mapView.addAnnotation(pinAnnotation)
@@ -327,31 +334,39 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         
         // print("\nMap view region changed, saving new position\n")
         let currentRegion = mapView.region
-         /*
-        print("Here is currentRegion: \(currentRegion)")
-        print("Here is currentRegion.center: \(currentRegion.center)")
-        print("Here is currentRegion.span: \(currentRegion.span)") */
+        /*
+         print("Here is currentRegion: \(currentRegion)")
+         print("Here is currentRegion.center: \(currentRegion.center)")
+         print("Here is currentRegion.span: \(currentRegion.span)") */
         
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.center.latitude), forKey: latitudeKey)
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.center.longitude), forKey: longitudeKey)
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.span.latitudeDelta), forKey: latitudeDeltaKey)
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.span.longitudeDelta), forKey: longitudeDeltaKey)
-
+        
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         
         print("\nhello, you just selected an annotation view!")
+        print("The app is in edit mode: \(isInEditMode)")
         
+        /*
         for item in travelPins {
             print(item.latitude as! Double)
             print((view.annotation?.coordinate.latitude)! as Double)
-        }
+        } */
+        
+        print("Here is the number of map annotations: ")
+        print(mapView.annotations.count)
+        print("Here are all the map annotations: ")
+        print(mapView.annotations)
         
         print("The associated Pin entity is: ")
         let customAnnotation = view.annotation as! CustomPinAnnotation
         print(customAnnotation)
         print(customAnnotation.pin)
+        print(view.annotation)
         
         /* This is the annotation that will be passed to the Photo Album */
         selectedPin = view.annotation as? CustomPinAnnotation
@@ -359,7 +374,25 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         if isInEditMode {
             
             /* Remove the annotation from the map */
-            mapView.removeAnnotation(view.annotation!)
+            print("Removing annotation now")
+            // mapView.removeAnnotation(view.annotation!)
+            if let removablePin = selectedPin {
+                print("\nSelected Pin successfully unwrapped")
+                print("Here is the number of map annotations: ")
+                print(mapView.annotations.count)
+                print("Here are all the map annotations: ")
+                print(mapView.annotations)
+                print("Here is removablePin: ")
+                print(removablePin)
+                print("Here is view.annotation")
+                print(view.annotation)
+                mapView.removeAnnotation(removablePin)
+                print("Here is the number of map annotations: ")
+                print(mapView.annotations.count)
+                print("Here are all the map annotations: ")
+                print(mapView.annotations)
+                
+            }
             selectedPin = nil
             
             /* Remove references to the pin and remove it from the data store */
