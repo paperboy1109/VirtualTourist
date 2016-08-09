@@ -40,7 +40,7 @@ public class PersistentDataService {
     
     func removePinEntity(entityToRemove: Pin) {
         // TODO: Implement this function
-        print("\nremovePinEntity called ")
+        print("\nremovePinEntity called.  Here is the current thread: \(NSThread.currentThread())")
         print(entityToRemove)
         
         managedObjectContext.deleteObject(entityToRemove)

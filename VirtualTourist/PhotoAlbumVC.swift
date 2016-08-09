@@ -18,6 +18,9 @@ class PhotoAlbumVC: UIViewController {
     
     var mapAnnotation: CustomPinAnnotation!
     
+    let defaultCenter = CLLocationCoordinate2D(latitude: 37.13283999999998, longitude: -95.785579999999996)
+    let defaultSpan = MKCoordinateSpan(latitudeDelta: 72.355996899647238, longitudeDelta: 61.276016959789544)
+    
     var newTouristPhotos: [NewPhoto] = []
     var setOfPhotosToSave: Set<NSData> = []
     
@@ -52,8 +55,15 @@ class PhotoAlbumVC: UIViewController {
         var mapSpan = MKCoordinateSpan()
         mapSpan.latitudeDelta = 0.02
         mapSpan.longitudeDelta = 0.02
-        mapRegion.span = mapSpan
-        mapRegion.center = mapAnnotation.coordinate
+        
+        if mapAnnotation.pin != nil {
+            mapRegion.span = mapSpan
+            mapRegion.center = mapAnnotation.coordinate
+            mapView.addAnnotation(mapAnnotation)
+        } else {
+            mapRegion.span = defaultSpan
+            mapRegion.center = defaultCenter
+        }
         
         mapView.zoomEnabled = false
         mapView.scrollEnabled = false
@@ -62,7 +72,7 @@ class PhotoAlbumVC: UIViewController {
         mapView.userInteractionEnabled = false
         mapView.region = mapRegion
         
-        mapView.addAnnotation(mapAnnotation)
+        
         
         /* Configure the collection view */
         collectionView.delegate = self
@@ -91,14 +101,7 @@ class PhotoAlbumVC: UIViewController {
         
         flowLayout.minimumInteritemSpacing = 0.0
         flowLayout.itemSize = CGSizeMake(dimension, dimension)
-        
-        print("\nHere is the (custom) map annotation: ")
-        print(self.mapAnnotation)
-        print(self.mapAnnotation.title)
-        print(self.mapAnnotation.pin)
-        print("Here is the latitude and the longitude, respectively: ")
-        print(self.mapAnnotation.pin.latitude)
-        print(self.mapAnnotation.pin.longitude)
+
         
         // For debugging only ---
         let flotsam = fetchedResultsController.fetchedObjects
@@ -114,16 +117,15 @@ class PhotoAlbumVC: UIViewController {
             }
         }
         
-        if !locationHasStoredPhotos {
+        if !locationHasStoredPhotos && (mapAnnotation.pin != nil) {
             
             print("New photos need to be downloaded from flickr")
             
-            // Get images according to location
             downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
                 
                 if !error {
-                    print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
-                    print(newPhotoArray)
+                    //print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
+                    //print(newPhotoArray)
                     
                     if !self.newTouristPhotos.isEmpty {
                         self.newTouristPhotos.removeAll()
@@ -137,18 +139,6 @@ class PhotoAlbumVC: UIViewController {
                     // Thread safety
                     print("\nWhich thread am I on?  Main thread? The current thread is: \(NSThread.currentThread())")
                     print(NSThread.isMainThread())
-                    
-                    performUIUpdatesOnMain(){
-                        
-                        print("\n(performUIUpdatesOnMain)Which thread am I on?  Main thread? \(NSThread.isMainThread()).  The thread is \(NSThread.currentThread())")
-                        
-                        //                        for item in self.newTouristPhotos {
-                        //                            let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
-                        //                            newPhotoEntity.pin = self.mapAnnotation.pin
-                        //                            newPhotoEntity.id = item.id! as NSNumber
-                        //                        }
-                        //                        CoreDataStack.sharedInstance().saveContext()
-                    }
                     
                     self.sharedContext.performBlock() {
                         
@@ -173,6 +163,8 @@ class PhotoAlbumVC: UIViewController {
                     // ---------------------------------------------
                 }
             }
+        } else {
+            print("\n(viewWillAppear) No initial download from flickr  ")
         }
     }
     
@@ -185,6 +177,7 @@ class PhotoAlbumVC: UIViewController {
         //            print("(viewWillDisappear) Saving photos ...  \nThe current thread is \(NSThread.currentThread())")
         //            self.savePhotosToDataStore(self.setOfPhotosToSave)
         //        }
+        
     }
     
     // MARK: - Helpers
@@ -222,7 +215,7 @@ class PhotoAlbumVC: UIViewController {
         
         print("\ndownloadNewImages called")
         
-        if let longitudeForFlickrPhotos = mapAnnotation.pin.longitude, latitudeForFlickrPhotos = mapAnnotation.pin.latitude {
+        if let longitudeForFlickrPhotos = mapAnnotation.pin!.longitude, latitudeForFlickrPhotos = mapAnnotation.pin!.latitude {
             
             let boundingBoxCorners = FlickrClient.sharedInstance().boundingBoxAsString(longitudeForFlickrPhotos, latitude: latitudeForFlickrPhotos)
             
@@ -308,7 +301,7 @@ class PhotoAlbumVC: UIViewController {
         let fetchRequest = NSFetchRequest(entityName: "Photo")
         let sortByID = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortByID]
-        fetchRequest.predicate = NSPredicate(format: "pin = %@", self.mapAnnotation.pin)
+        fetchRequest.predicate = NSPredicate(format: "pin = %@", self.mapAnnotation.pin!)
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
@@ -375,12 +368,12 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         print(photoFromfetchedResultsController.id)
         
         /*
-        if let image = photoFromfetchedResultsController.image {
-            let imageUIImage = UIImage(data: image)
-            performUIUpdatesOnMain() {
-                cell.touristPhotoCellImageView.image = imageUIImage
-            }
-        }*/
+         if let image = photoFromfetchedResultsController.image {
+         let imageUIImage = UIImage(data: image)
+         performUIUpdatesOnMain() {
+         cell.touristPhotoCellImageView.image = imageUIImage
+         }
+         }*/
         
         
         print("Does the cell have a photo?")
@@ -389,6 +382,10 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         /* When the photo entity does not have photo data, download the image from flickr */
         // if cell.touristPhotoCellImageView.image == nil {
         if photoFromfetchedResultsController.image == nil {
+            
+            guard !newTouristPhotos.isEmpty else {
+                return cell
+            }
             
             let newPhotoIndex = newTouristPhotos.indexOf { $0.id == photoFromfetchedResultsController.id }
             
@@ -450,7 +447,7 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
             let imageUIImage = UIImage(data: image)
             performUIUpdatesOnMain() {
                 cell.touristPhotoCellImageView.image = imageUIImage
-            }            
+            }
         }
         
         

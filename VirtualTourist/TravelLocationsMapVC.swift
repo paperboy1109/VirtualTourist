@@ -20,11 +20,11 @@ class TravelLocationsMapVC: UIViewController {
     
     var request: NSFetchRequest!
     
-    var focusAnnotation = MKPointAnnotation()
+    // var focusAnnotation = MKPointAnnotation()
     
-    var focusCoordinate = CLLocationCoordinate2D()
+    // var focusCoordinate = CLLocationCoordinate2D()
     
-    var selectedPin: CustomPinAnnotation!
+    var selectedPin: CustomPinAnnotation?
     
     var persistentDataService: PersistentDataService!
     
@@ -66,8 +66,6 @@ class TravelLocationsMapVC: UIViewController {
         mapView.addGestureRecognizer(touchAndHold)
         
         /* Get access to persisted data */
-        // managedObjectContext = coreDataStack.managedObjectContext
-        // persistentDataService = PersistentDataService(managedObjectContext: managedObjectContext)
         persistentDataService = PersistentDataService(managedObjectContext: sharedContext)
         
     }
@@ -90,16 +88,8 @@ class TravelLocationsMapVC: UIViewController {
         loadStoredPins()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    
     // MARK: - Navigation
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         
@@ -108,11 +98,9 @@ class TravelLocationsMapVC: UIViewController {
         navigationItem.backBarButtonItem = navigationBackButton
         
         if segue.identifier == "ToPhotoAlbum" {
-            let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC         
+            let photoAlbumVC = segue.destinationViewController as! PhotoAlbumVC
             photoAlbumVC.mapAnnotation = self.selectedPin
         }
-        
-        //TODO: Pass Pin details to the photo album when a pre-existing pin is tapped
     }
     
     // MARK: - Actions
@@ -163,7 +151,7 @@ class TravelLocationsMapVC: UIViewController {
     func createNewAnnotation(gestureRecognizer:UIGestureRecognizer) {
         
         // Only save a location once for a given long press
-        if gestureRecognizer.state == UIGestureRecognizerState.Began {
+        if gestureRecognizer.state == UIGestureRecognizerState.Began && isInEditMode == false {
             
             /* Get the tapped location */
             
@@ -179,7 +167,7 @@ class TravelLocationsMapVC: UIViewController {
                 
                 /* GUARD: Was there an error? */
                 guard (error == nil) else {
-                    print("There was an error with your request: \(error)")
+                    print("There was an error when trying to geocode: \(error)")
                     return
                 }
                 
@@ -222,7 +210,7 @@ class TravelLocationsMapVC: UIViewController {
                 annotation.coordinate = newCoordinate
                 annotation.title = title
                 
-                self.focusAnnotation = annotation
+                // self.focusAnnotation = annotation
                 
                 // *** Use custom class ***
                 //self.mapView.addAnnotation(annotation)
@@ -314,12 +302,12 @@ class TravelLocationsMapVC: UIViewController {
         travelPins = persistentDataService.getPinEntities()
         
         /*
-        for item in travelPins {
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: Double(item.latitude!), longitude: Double(item.longitude!))
-            annotation.title = item.title!
-            self.mapView.addAnnotation(annotation)
-        } */
+         for item in travelPins {
+         let annotation = MKPointAnnotation()
+         annotation.coordinate = CLLocationCoordinate2D(latitude: Double(item.latitude!), longitude: Double(item.longitude!))
+         annotation.title = item.title!
+         self.mapView.addAnnotation(annotation)
+         } */
         
         for item in travelPins {
             let pinAnnotation = CustomPinAnnotation(pin: item, title: item.title, subtitle: nil)
@@ -336,20 +324,19 @@ class TravelLocationsMapVC: UIViewController {
 extension TravelLocationsMapVC: MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        print("\nMap view region changed, saving new position\n")
+        
+        // print("\nMap view region changed, saving new position\n")
         let currentRegion = mapView.region
+         /*
         print("Here is currentRegion: \(currentRegion)")
         print("Here is currentRegion.center: \(currentRegion.center)")
-        print("Here is currentRegion.span: \(currentRegion.span)")
+        print("Here is currentRegion.span: \(currentRegion.span)") */
         
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.center.latitude), forKey: latitudeKey)
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.center.longitude), forKey: longitudeKey)
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.span.latitudeDelta), forKey: latitudeDeltaKey)
         NSUserDefaults.standardUserDefaults().setValue(Double(currentRegion.span.longitudeDelta), forKey: longitudeDeltaKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
-        
-        let flotsam = NSUserDefaults.standardUserDefaults().valueForKey(latitudeKey) as? Double
-        print("Here is the value for latitudeKey: \(flotsam)")
+
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
@@ -361,30 +348,38 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
             print((view.annotation?.coordinate.latitude)! as Double)
         }
         
-        focusCoordinate = (view.annotation?.coordinate)!
-        print("The focusCoordinate is: ")
-        print(focusCoordinate)
-        
         print("The associated Pin entity is: ")
         let customAnnotation = view.annotation as! CustomPinAnnotation
         print(customAnnotation)
         print(customAnnotation.pin)
-        print(travelPins.indexOf(customAnnotation.pin))
         
         /* This is the annotation that will be passed to the Photo Album */
-        selectedPin = view.annotation as! CustomPinAnnotation
+        selectedPin = view.annotation as? CustomPinAnnotation
         
         if isInEditMode {
             
             /* Remove the annotation from the map */
             mapView.removeAnnotation(view.annotation!)
+            selectedPin = nil
             
             /* Remove references to the pin and remove it from the data store */
-            let pinToRemove = customAnnotation.pin
-            travelPins.removeAtIndex(travelPins.indexOf(pinToRemove)!)
-            persistentDataService.removePinEntity(pinToRemove)
+            print("Removing a Pin entity .... The current thread is \(NSThread.currentThread())")
+            if let pinToRemove = customAnnotation.pin {
+                
+                /* Remove references to the Pin in travelPins; new Pin entities will not need this extra step */
+                print("Here is travelPins: \(travelPins)")
+                let indexOfPinToRemove = travelPins.indexOf(pinToRemove)
+                print("Here is the index for a Pin that needs to be removed from travelPins:")
+                print(indexOfPinToRemove)
+                
+                if indexOfPinToRemove != nil {
+                    travelPins.removeAtIndex(indexOfPinToRemove!)
+                }
+                persistentDataService.removePinEntity(pinToRemove)
+                
+                CoreDataStack.sharedInstance().saveContext()
+            }
             
-            CoreDataStack.sharedInstance().saveContext()
             
         } else {
             performSegueWithIdentifier("ToPhotoAlbum", sender: self)
