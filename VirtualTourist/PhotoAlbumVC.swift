@@ -499,6 +499,15 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         
         print("Cell at index path \(indexPath) was tapped ")
         
+        photoToDelete = fetchedResultsController.objectAtIndexPath(indexPath) as? Photo
+        
+        if photoToDelete != nil {
+            
+            self.sharedContext.deleteObject(photoToDelete!)
+            
+            CoreDataStack.sharedInstance().saveContext()
+            
+        }        
     }
     
 }
