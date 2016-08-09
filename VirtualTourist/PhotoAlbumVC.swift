@@ -101,7 +101,7 @@ class PhotoAlbumVC: UIViewController {
         
         flowLayout.minimumInteritemSpacing = 0.0
         flowLayout.itemSize = CGSizeMake(dimension, dimension)
-
+        
         
         // For debugging only ---
         let flotsam = fetchedResultsController.fetchedObjects
@@ -226,7 +226,9 @@ class PhotoAlbumVC: UIViewController {
                 
                 if !error {
                     
+                    /* Update the page number of the last page of photo results in case it has changed since the first call to flickr */
                     if let newMaxFlickrPhotoPages = pageTotal {
+                        print("Here is the (updated) maximum number of photo pages")
                         print(newMaxFlickrPhotoPages)
                         self.maxFlickrPhotoPageNumber = newMaxFlickrPhotoPages
                     }
@@ -284,11 +286,47 @@ class PhotoAlbumVC: UIViewController {
             targetFlickrPhotoPage = 1
         }
         
+        /* Remove persisted Photo entities, if any */
+        if let totalStoredPhotos = fetchedResultsController.fetchedObjects?.count {
+            
+            if totalStoredPhotos > 0 {
+                self.sharedContext.performBlock() {
+                    for item in self.fetchedResultsController.fetchedObjects as! [Photo] {
+                     self.sharedContext.deleteObject(item)
+                    }
+                }
+                
+                CoreDataStack.sharedInstance().saveContext()
+            }
+        }
+        
         downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
             
-            if !error {
+            if !error && self.mapAnnotation.pin != nil {
                 print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
                 print(newPhotoArray)
+                
+                if !self.newTouristPhotos.isEmpty {
+                    self.newTouristPhotos.removeAll()
+                }
+                
+                self.newTouristPhotos = newPhotoArray!
+                print("Here is newPhotoArray:")
+                print(newPhotoArray)
+                print(newPhotoArray?.count)
+                
+                self.sharedContext.performBlock() {
+                    
+                    print("\n(performUIUpdatesOnMain)Which thread am I on?  Main thread? \(NSThread.isMainThread()).  The thread is \(NSThread.currentThread())")
+                    
+                    for item in self.newTouristPhotos {
+                        let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
+                        newPhotoEntity.pin = self.mapAnnotation.pin
+                        newPhotoEntity.id = item.id! as NSNumber
+                    }
+                    CoreDataStack.sharedInstance().saveContext()
+                    
+                }
             }
         }
     }
