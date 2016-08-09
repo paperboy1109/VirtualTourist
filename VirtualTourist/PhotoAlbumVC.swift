@@ -178,6 +178,23 @@ class PhotoAlbumVC: UIViewController {
         //            self.savePhotosToDataStore(self.setOfPhotosToSave)
         //        }
         
+        /* Remove Photo entities that have no image, e.g. if photo data did not finish downloading before the user moves to a different view */
+        
+        if !self.newTouristPhotos.isEmpty {
+            self.newTouristPhotos.removeAll()
+        }
+        
+        sharedContext.performBlock() {
+            for item in self.fetchedResultsController.fetchedObjects as! [Photo] {
+                
+                if item.image == nil {
+                    self.sharedContext.deleteObject(item)
+                }
+            }
+            
+            CoreDataStack.sharedInstance().saveContext()
+        }
+        
     }
     
     // MARK: - Helpers
@@ -292,7 +309,7 @@ class PhotoAlbumVC: UIViewController {
             if totalStoredPhotos > 0 {
                 self.sharedContext.performBlock() {
                     for item in self.fetchedResultsController.fetchedObjects as! [Photo] {
-                     self.sharedContext.deleteObject(item)
+                        self.sharedContext.deleteObject(item)
                     }
                 }
                 
@@ -371,9 +388,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         // Filler code
         //return 1
         
-        // TODO: Implement the fetched results controller
-        // Use the Fetched Results Controller
-        
         print("in collectionView(_:numberOfItemsInSection)")
         let sectionInfo = fetchedResultsController.sections![section]
         print("number Of Cells: \(sectionInfo.numberOfObjects)")
@@ -384,8 +398,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         print("in collectionView(_:cellForItemAtIndexPath)")
-        
-        // let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as UICollectionViewCell
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as! TouristPhotoCell
         cell.touristPhotoCellActivityIndicator.hidden = false
@@ -406,15 +418,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         //print(photoFromfetchedResultsController.image)
         print("Does the photo entity have an image ID?")
         print(photoFromfetchedResultsController.id)
-        
-        /*
-         if let image = photoFromfetchedResultsController.image {
-         let imageUIImage = UIImage(data: image)
-         performUIUpdatesOnMain() {
-         cell.touristPhotoCellImageView.image = imageUIImage
-         }
-         }*/
-        
         
         print("Does the cell have a photo?")
         print("\(cell.touristPhotoCellImageView.image == nil)")
@@ -447,10 +450,14 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                         
                         self.sharedContext.performBlock() {
                             
-                            // self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: false)
-                            photoFromfetchedResultsController.image = imageData
-                            
-                            CoreDataStack.sharedInstance().saveContext()
+                            /* Don't try to mutate an object if it has been removed from the context */
+                            let currentFetchedObjects = self.fetchedResultsController.fetchedObjects as! [Photo]
+                            if currentFetchedObjects.contains(photoFromfetchedResultsController) {
+                                
+                                photoFromfetchedResultsController.image = imageData
+                                
+                                CoreDataStack.sharedInstance().saveContext()
+                            }
                             
                             //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
                         }
@@ -492,8 +499,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
             }
         }
         
-        
-        
         return cell
     }
     
@@ -511,7 +516,7 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
             
             CoreDataStack.sharedInstance().saveContext()
             
-        }        
+        }
     }
     
 }
