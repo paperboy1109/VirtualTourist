@@ -28,18 +28,6 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ItD-wa-xsp">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LFu-bf-AxV">
-                                <rect key="frame" x="277" y="550" width="46" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="T6P-aL-Ki7"/>
-                                    <constraint firstAttribute="width" constant="46" id="ULS-0L-1iR"/>
-                                </constraints>
-                                <state key="normal" title="Segue"/>
-                                <connections>
-                                    <segue destination="d6S-V7-9Su" kind="show" identifier="ButtonSegue" id="ChG-6i-JDf"/>
-                                </connections>
-                            </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Bw-j4-Oy2">
                                 <rect key="frame" x="0.0" y="64" width="600" height="459"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -75,10 +63,8 @@
                             <constraint firstItem="3Bw-j4-Oy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="d8S-LA-60O"/>
                             <constraint firstItem="wU6-J7-tGW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="hOX-3M-aSl"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ItD-wa-xsp" secondAttribute="bottom" id="hng-Zb-Bch"/>
-                            <constraint firstItem="LFu-bf-AxV" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jUj-dA-XIg"/>
                             <constraint firstItem="wU6-J7-tGW" firstAttribute="top" secondItem="3Bw-j4-Oy2" secondAttribute="bottom" id="tG6-ZF-WhT"/>
                             <constraint firstItem="3Bw-j4-Oy2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="xjf-l3-VcZ"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="LFu-bf-AxV" secondAttribute="bottom" constant="20" id="zix-ug-SIu"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="5ZQ-Sb-BQZ">
@@ -234,7 +220,4 @@
             <point key="canvasLocation" x="490" y="400"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="aXx-bi-B48"/>
-    </inferredMetricsTieBreakers>
 </document>
