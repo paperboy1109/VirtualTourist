@@ -270,26 +270,8 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        
-        print("\nhello, you just selected an annotation view!")
-        print("The app is in edit mode: \(isInEditMode)")
-        
-        /*
-        for item in travelPins {
-            print(item.latitude as! Double)
-            print((view.annotation?.coordinate.latitude)! as Double)
-        } */
-        
-        print("Here is the number of map annotations: ")
-        print(mapView.annotations.count)
-        print("Here are all the map annotations: ")
-        print(mapView.annotations)
-        
-        print("The associated Pin entity is: ")
+
         let customAnnotation = view.annotation as! CustomPinAnnotation
-        print(customAnnotation)
-        print(customAnnotation.pin)
-        print(view.annotation)
         
         /* This is the annotation that will be passed to the Photo Album */
         selectedPin = view.annotation as? CustomPinAnnotation
@@ -297,36 +279,17 @@ extension TravelLocationsMapVC: MKMapViewDelegate {
         if isInEditMode {
             
             /* Remove the annotation from the map */
-            print("Removing annotation now")
-            // mapView.removeAnnotation(view.annotation!)
+
             if let removablePin = selectedPin {
-                print("\nSelected Pin successfully unwrapped")
-                print("Here is the number of map annotations: ")
-                print(mapView.annotations.count)
-                print("Here are all the map annotations: ")
-                print(mapView.annotations)
-                print("Here is removablePin: ")
-                print(removablePin)
-                print("Here is view.annotation")
-                print(view.annotation)
                 mapView.removeAnnotation(removablePin)
-                print("Here is the number of map annotations: ")
-                print(mapView.annotations.count)
-                print("Here are all the map annotations: ")
-                print(mapView.annotations)
-                
             }
             selectedPin = nil
             
             /* Remove references to the pin and remove it from the data store */
-            print("Removing a Pin entity .... The current thread is \(NSThread.currentThread())")
             if let pinToRemove = customAnnotation.pin {
                 
                 /* Remove references to the Pin in travelPins; new Pin entities will not need this extra step */
-                print("Here is travelPins: \(travelPins)")
                 let indexOfPinToRemove = travelPins.indexOf(pinToRemove)
-                print("Here is the index for a Pin that needs to be removed from travelPins:")
-                print(indexOfPinToRemove)
                 
                 if indexOfPinToRemove != nil {
                     travelPins.removeAtIndex(indexOfPinToRemove!)

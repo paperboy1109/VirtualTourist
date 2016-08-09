@@ -102,15 +102,6 @@ class PhotoAlbumVC: UIViewController {
         flowLayout.minimumInteritemSpacing = 0.0
         flowLayout.itemSize = CGSizeMake(dimension, dimension)
         
-        
-        // For debugging only ---
-        let flotsam = fetchedResultsController.fetchedObjects
-        print("\nHere is flotsam: ")
-        print(flotsam)
-        print("Here is the number of photos that were returnded by the fetched results controller: \(flotsam?.count)")
-        print(fetchedResultsController.sections?.count)
-        // ---------------------------------------------
-        
         if let totalStoredPhotos = fetchedResultsController.fetchedObjects?.count {
             if totalStoredPhotos > 0 {
                 locationHasStoredPhotos = true
@@ -124,21 +115,12 @@ class PhotoAlbumVC: UIViewController {
             downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
                 
                 if !error {
-                    //print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
-                    //print(newPhotoArray)
                     
                     if !self.newTouristPhotos.isEmpty {
                         self.newTouristPhotos.removeAll()
                     }
                     
                     self.newTouristPhotos = newPhotoArray!
-                    print("Here is newPhotoArray:")
-                    print(newPhotoArray)
-                    print(newPhotoArray?.count)
-                    
-                    // Thread safety
-                    print("\nWhich thread am I on?  Main thread? The current thread is: \(NSThread.currentThread())")
-                    print(NSThread.isMainThread())
                     
                     self.sharedContext.performBlock() {
                         
@@ -152,15 +134,7 @@ class PhotoAlbumVC: UIViewController {
                         CoreDataStack.sharedInstance().saveContext()
                         
                     }
-                    
-                    
-                    // For debugging only ---
-                    let jetsam = self.fetchedResultsController.fetchedObjects
-                    print("\nHere is jetsam: ")
-                    print(jetsam)
-                    print("Here is the number of photos that were returnded by the fetched results controller: \(jetsam?.count)")
-                    print(self.fetchedResultsController.sections?.count)
-                    // ---------------------------------------------
+
                 }
             }
         } else {
@@ -170,13 +144,6 @@ class PhotoAlbumVC: UIViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        //        print("View will dissappear called")
-        //
-        //        sharedContext.performBlock() {
-        //            print("(viewWillDisappear) Saving photos ...  \nThe current thread is \(NSThread.currentThread())")
-        //            self.savePhotosToDataStore(self.setOfPhotosToSave)
-        //        }
         
         /* Remove Photo entities that have no image, e.g. if photo data did not finish downloading before the user moves to a different view */
         
@@ -279,8 +246,6 @@ class PhotoAlbumVC: UIViewController {
     func savePhotosToDataStore(newPhotoDataSet: Set<NSData>) {
         print("\nSaving \(newPhotoDataSet.count) items to the data store")
         
-        //TODO: Empty out the data store here?
-        
         for item in newPhotoDataSet {
             let photoEntityToSave = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: sharedContext) as! Photo
             photoEntityToSave.image = item
@@ -373,31 +338,17 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         
-        // Filler code
-        //return 1
-        
-        // TODO: Implement the fetched results controller
-        
-        // Use the Fetched Results Controller
-        print("in numberOfSectionsInCollectionView()")
         return self.fetchedResultsController.sections!.count ?? 0
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        // Filler code
-        //return 1
-        
-        print("in collectionView(_:numberOfItemsInSection)")
+
         let sectionInfo = fetchedResultsController.sections![section]
-        print("number Of Cells: \(sectionInfo.numberOfObjects)")
         return sectionInfo.numberOfObjects
     }
     
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        print("in collectionView(_:cellForItemAtIndexPath)")
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {                
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TouristPhotoCell", forIndexPath: indexPath) as! TouristPhotoCell
         cell.touristPhotoCellActivityIndicator.hidden = false
@@ -407,23 +358,8 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
         
         
         let photoFromfetchedResultsController = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-        //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
-        
-        self.sharedContext.performBlock() {
-            //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
-        }
-        
-        
-        //print("Does the photo entity have a photo?")
-        //print(photoFromfetchedResultsController.image)
-        print("Does the photo entity have an image ID?")
-        print(photoFromfetchedResultsController.id)
-        
-        print("Does the cell have a photo?")
-        print("\(cell.touristPhotoCellImageView.image == nil)")
         
         /* When the photo entity does not have photo data, download the image from flickr */
-        // if cell.touristPhotoCellImageView.image == nil {
         if photoFromfetchedResultsController.image == nil {
             
             guard !newTouristPhotos.isEmpty else {
@@ -459,35 +395,16 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                                 CoreDataStack.sharedInstance().saveContext()
                             }
                             
-                            //self.sharedContext.refreshObject(photoFromfetchedResultsController, mergeChanges: true)
                         }
-                        
-                        /*
-                         self.sharedContext.performBlock() {
-                         
-                         let photoToUpdate = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-                         self.sharedContext.refreshObject(photoToUpdate, mergeChanges: true)
-                         
-                         print("returnImageByURL saving ... Current thread: \(NSThread.currentThread())")
-                         // photoFromfetchedResultsController.image = imageData
-                         photoToUpdate.image = imageData
-                         // CoreDataStack.sharedInstance().saveContext()
-                         //self.sharedContext.refreshObject(photoToUpdate, mergeChanges: true)
-                         
-                         CoreDataStack.sharedInstance().saveContext()
-                         
-                         }*/
                         
                     }
                     
                 }
             }
-        } else {
-            print("No need to download a photo")
         }
         
-        print("(cellForItemAtIndexPath) The number of photos to be saved is: ")
-        print(setOfPhotosToSave.count)
+        // print("(cellForItemAtIndexPath) The number of photos to be saved is: ")
+        // print(setOfPhotosToSave.count)
         
         
         if let image = photoFromfetchedResultsController.image {
@@ -533,19 +450,19 @@ extension PhotoAlbumVC: NSFetchedResultsControllerDelegate {
         switch type {
             
         case .Insert:
-            print("NSFetchedResultsChangeType.Insert detected")
+            // print("NSFetchedResultsChangeType.Insert detected")
             let newIndexPathAdjusted = NSIndexPath(forItem: newIndexPath!.item, inSection: 0)
             insertedIndexPaths.append(newIndexPathAdjusted)
         case .Delete:
-            print("NSFetchedResultsChangeType.Delete detected")
+            // print("NSFetchedResultsChangeType.Delete detected")
             let indexPathAdjusted = NSIndexPath(forItem: indexPath!.item, inSection: 0)
             deletedIndexPaths.append(indexPathAdjusted)
         case .Update:
-            print("NSFetchedResultsChangeType.Update detected")
+            // print("NSFetchedResultsChangeType.Update detected")
             let indexPathAdjusted = NSIndexPath(forItem: indexPath!.item, inSection: 0)
             updatedIndexPaths.append(indexPathAdjusted)
         case .Move:
-            print("NSFetchedResultsChangeType.Move detected")
+            // print("NSFetchedResultsChangeType.Move detected")
             fallthrough
         default:
             break
@@ -574,12 +491,12 @@ extension PhotoAlbumVC: NSFetchedResultsControllerDelegate {
             for indexPath in self.updatedIndexPaths {
                 self.collectionView.reloadItemsAtIndexPaths([indexPath])
             }
-            }, completion: { (success) in
+            }, completion: nil //{ (success) in
                 
-                print("The completion handler for controllerDidChangeContent was called")
-                print("Here is 'success':  ")
-                print(success)
-            }
+                // print("The completion handler for controllerDidChangeContent was called")
+                // print("Here is 'success':  ")
+                // print(success)
+            //}
         )
         
     }
