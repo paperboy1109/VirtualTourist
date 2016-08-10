@@ -195,6 +195,7 @@
                         <outlet property="collectionView" destination="Vch-JM-Amr" id="jTu-Q7-EwG"/>
                         <outlet property="flowLayout" destination="yXY-3C-mmG" id="fc3-QO-GlL"/>
                         <outlet property="mapView" destination="mze-jS-GHX" id="YOw-CI-fK7"/>
+                        <outlet property="newCollectionButton" destination="Gg7-xh-HwH" id="nfe-lO-Ery"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JEN-ct-Erv" userLabel="First Responder" sceneMemberID="firstResponder"/>

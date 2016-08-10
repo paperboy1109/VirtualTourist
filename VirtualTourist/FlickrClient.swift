@@ -27,6 +27,7 @@ class FlickrClient: NSObject {
     
     func returnImageArrayFromFlickr(methodParameters: [String:AnyObject], completionHandlerForReturnImageArrayFromFlickrBySearch: (imageDataArray: [[String:AnyObject]]?, pageTotal: Int?, error: Bool, errorDesc: String?) -> Void) {
         
+        print("returnImageArrayFromFlickr called")
         // What parameters were received?
         // print(flickrURLFromParameters(methodParameters))
         

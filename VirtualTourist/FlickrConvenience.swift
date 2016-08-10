@@ -14,7 +14,7 @@ extension FlickrClient {
     
     func getNewPhotoArrayWithConstraints(locationParameterKey: String, targetPageNumber: Int, maxPhotos: Int, completionHandlerForGetNewPhotoArrayWithConstraints: (newPhotoArray: [NewPhoto]?, pageTotal:Int?, error: Bool, errorDesc: String?) -> Void) {
         
-        // print("\ngetNewPhotoArrayWithConstraints called")
+        print("\ngetNewPhotoArrayWithConstraints called")
         
         // Set method parameters
         let methodParameters: [String: String!] = [

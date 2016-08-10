@@ -40,6 +40,7 @@ class PhotoAlbumVC: UIViewController {
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var flowLayout: UICollectionViewFlowLayout!
+    @IBOutlet var newCollectionButton: UIButton!
     
     // MARK: - Lifecycle
     
@@ -109,11 +110,13 @@ class PhotoAlbumVC: UIViewController {
         }
         
         if !locationHasStoredPhotos && (mapAnnotation.pin != nil) {
-            
+            print("here is the map annotation: ")
+            print(mapAnnotation)
+            print("About to download new images")
             downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
                 
                 if !error {
-                    
+                    print("New images have been downloaded")
                     if !self.newTouristPhotos.isEmpty {
                         self.newTouristPhotos.removeAll()
                     }
@@ -182,7 +185,7 @@ class PhotoAlbumVC: UIViewController {
     } */
     
     func downloadNewImages(targetPageNumber: Int, maxPhotos: Int, completionHandlerForDownloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
-        
+        print("downloadNewImages has been called")
         if let longitudeForFlickrPhotos = mapAnnotation.pin!.longitude, latitudeForFlickrPhotos = mapAnnotation.pin!.latitude {
             
             let boundingBoxCorners = FlickrClient.sharedInstance().boundingBoxAsString(longitudeForFlickrPhotos, latitude: latitudeForFlickrPhotos)
