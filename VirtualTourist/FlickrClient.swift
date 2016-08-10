@@ -60,7 +60,7 @@ class FlickrClient: NSObject {
             //print(data)
             
             // TODO: There should potentially be a separate method for this
-            // parse the data
+            /* Parse the data */
             let parsedResult: AnyObject!
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
@@ -148,84 +148,6 @@ class FlickrClient: NSObject {
         }
         
         task.resume()
-    }
-    
-    // MARK: - Return an array of NewPhoto objects given contstraints on the (flickr) page number and the total number of objects
-    
-    /*
-    func getRandomSubsetPhotoDataArrayFromFlickr(targetPage: Int, maxPhotos: Int, completionHandlerForGetRandomSubsetPhotoDataArrayFromFlickr: (newPhotoArray: [NewPhoto]?, pageTotal:Int?, error: Bool, errorDesc: String?) -> Void) {
-        
-        print("\n\n\n ***** \n getRandomSubsetPhotoDataArrayFromFlickr called")
-        
-        FlickrClient.sharedInstance().searchFlickrForImagesForPage(targetPage) { (imageDataArray, pageTotal, error, errorDesc) in
-            
-            if !error {
-                
-                if let imageDictionaries = imageDataArray {
-                    
-                    // For debugging
-                    print("\n*Here is the number of image dictionaries: ")
-                    print(imageDictionaries.count)
-                    print("Here is the parsed data:")
-                    print("muted")
-                    // print(imageDictionaries)
-                    
-                    if imageDictionaries.count > 0 {
-                        
-                        // print(imageDictionaries[0])
-                        
-                        var newPhotoArrayToReturn: [NewPhoto] = []
-                        
-                        func sendError(responseKey: String, imageDictionary: [String: AnyObject]) {
-                            print("Cannot find key \(responseKey). For review: \n \(imageDictionary)")
-                            completionHandlerForGetRandomSubsetPhotoDataArrayFromFlickr(newPhotoArray: nil, pageTotal: 1, error: true, errorDesc: "At least one photo attribute was missing from the flickr data.")
-                        }
-                        
-                        /* Pick photos randomly from those available and append them to the array */
-                        let randomPhotoIndices = self.uniquePhotoIndices(min(maxPhotos, imageDictionaries.count), minIndex: 0, maxIndex: UInt32(imageDictionaries.count-1))
-                        
-                        print("Here are the random photo indices: \(randomPhotoIndices)")
-                        
-                        for index in 0...(randomPhotoIndices.count-1) {
-                            
-                            /* Defensive coding in case the image dictionaries do not match the expected format */
-                            
-                            guard let imageUrlString = imageDictionaries[randomPhotoIndices[index]][FlickrClient.Constants.FlickrResponseKeys.MediumURL] as? String else {
-                                sendError(FlickrClient.Constants.FlickrResponseKeys.MediumURL, imageDictionary: imageDictionaries[randomPhotoIndices[index]])
-                                return
-                            }
-                            
-                            guard let imageTitle = imageDictionaries[randomPhotoIndices[index]][FlickrClient.Constants.FlickrResponseKeys.Title] as? String else {
-                                sendError(FlickrClient.Constants.FlickrResponseKeys.Title, imageDictionary: imageDictionaries[randomPhotoIndices[index]])
-                                return
-                            }
-                            
-                            guard let imageID = imageDictionaries[randomPhotoIndices[index]][FlickrClient.Constants.FlickrResponseKeys.PhotoID] as? String else {
-                                sendError(FlickrClient.Constants.FlickrResponseKeys.PhotoID, imageDictionary: imageDictionaries[randomPhotoIndices[index]])
-                                return
-                            }
-                            
-                            /* Casting to an Int is not working in the guard statement */
-                            if let newPhotoID = Int(imageID) {
-                                let newPhoto = NewPhoto(url: imageUrlString, title: imageTitle, id: newPhotoID)
-                                newPhotoArrayToReturn.append(newPhoto)
-                            }
-                            
-                            
-                        }
-                        
-                        completionHandlerForGetRandomSubsetPhotoDataArrayFromFlickr(newPhotoArray: newPhotoArrayToReturn, pageTotal: pageTotal, error: false, errorDesc: nil)
-                        
-                        
-                    } else {
-                        print("No images were returned")
-                        completionHandlerForGetRandomSubsetPhotoDataArrayFromFlickr(newPhotoArray: nil, pageTotal: 1, error: true, errorDesc: "No images were returned")
-                    }
-                    
-                }
-            }
-        }
-    }*/
-    
+    }    
 
 }
