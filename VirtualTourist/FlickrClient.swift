@@ -69,8 +69,7 @@ class FlickrClient: NSObject {
             }
             
             // For debugging only
-            print("\n(returnImageArrayFromFlickr)*** Here is the parsed result: ")
-            print("muted")
+            //print("\n(returnImageArrayFromFlickr)*** Here is the parsed result: ")
             // print(parsedResult)
             
             /* GUARD: Are the "photos" and "photo" keys in our result? */
@@ -95,7 +94,7 @@ class FlickrClient: NSObject {
             //print("Here is photoArray: \(photoArray)")
             //print("Here is the number of photos: \(photoArray.count)")
             
-            print("Here is the number of pages: ")
+            print("Here is the number of pages available for the given location: ")
             print(photosDictionary[Constants.FlickrResponseKeys.Pages])
             
             // Prevent crash if there is a problem getting the number of pages of photos

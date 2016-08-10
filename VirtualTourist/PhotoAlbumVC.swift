@@ -239,10 +239,11 @@ class PhotoAlbumVC: UIViewController {
     
     @IBAction func newCollectionTapped(sender: AnyObject) {
         
-        print("The New Collection button was tapped")
+        print("\nThe New Collection button was tapped")
         print("The index for the last page of photos is: \(maxFlickrPhotoPageNumber)")
+        print("The target photo page number is: \(targetFlickrPhotoPage)")
         
-        if targetFlickrPhotoPage < maxPhotos {
+        if targetFlickrPhotoPage < maxFlickrPhotoPageNumber {
             targetFlickrPhotoPage = targetFlickrPhotoPage + 1
         } else {
             targetFlickrPhotoPage = 1
@@ -265,21 +266,16 @@ class PhotoAlbumVC: UIViewController {
         downloadNewImages(targetFlickrPhotoPage, maxPhotos: self.maxPhotos) { (newPhotoArray, error, errorDesc) in
             
             if !error && self.mapAnnotation.pin != nil {
-                print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
-                print(newPhotoArray)
+                //print("\n\n\n(downloadNewImages closure)Here is newPhotoArray:")
+                //print(newPhotoArray)
                 
                 if !self.newTouristPhotos.isEmpty {
                     self.newTouristPhotos.removeAll()
                 }
                 
                 self.newTouristPhotos = newPhotoArray!
-                print("Here is newPhotoArray:")
-                print(newPhotoArray)
-                print(newPhotoArray?.count)
                 
                 self.sharedContext.performBlock() {
-                    
-                    print("\n(performUIUpdatesOnMain)Which thread am I on?  Main thread? \(NSThread.isMainThread()).  The thread is \(NSThread.currentThread())")
                     
                     for item in self.newTouristPhotos {
                         let newPhotoEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: self.sharedContext) as! Photo
@@ -352,6 +348,10 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                 print("No photo index found!***")
             }
             
+            guard newPhotoIndex != nil else {
+                return cell
+            }
+            
             FlickrClient.sharedInstance().returnImageFromFlickrByURL(newTouristPhotos[newPhotoIndex!].url!) { (imageData, error, errorDesc) in
                 
                 if !error {
@@ -421,8 +421,7 @@ extension PhotoAlbumVC: NSFetchedResultsControllerDelegate {
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
-        /* Detect the type of change that has triggered the event */
-        
+        /* Detect the type of change that has triggered the event */        
         switch type {
             
         case .Insert:
