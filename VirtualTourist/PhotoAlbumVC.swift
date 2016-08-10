@@ -171,27 +171,6 @@ class PhotoAlbumVC: UIViewController {
     
     // MARK: - Helpers
     
-    /*
-    func loadNewImages(targetPage: Int, completionHandlerForloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
-        
-        FlickrClient.sharedInstance().getRandomSubsetPhotoDataArrayFromFlickr(targetFlickrPhotoPage, maxPhotos: maxPhotos) { (newPhotoArray, pageTotal, error, errorDesc) in
-            
-            if !error {
-                
-                if let newMaxFlickrPhotoPages = pageTotal {
-                    self.maxFlickrPhotoPageNumber = newMaxFlickrPhotoPages
-                }
-                
-                completionHandlerForloadNewImages(newPhotoArray: newPhotoArray, error: false, errorDesc: nil)
-                
-            } else {
-                completionHandlerForloadNewImages(newPhotoArray: nil, error: true, errorDesc: "Unable to return new images")
-            }
-            
-        }
-        
-    } */
-    
     func downloadNewImages(targetPageNumber: Int, maxPhotos: Int, completionHandlerForDownloadNewImages: (newPhotoArray: [NewPhoto]?, error: Bool, errorDesc: String?) -> Void) {
         print("downloadNewImages has been called")
         if let longitudeForFlickrPhotos = mapAnnotation.pin!.longitude, latitudeForFlickrPhotos = mapAnnotation.pin!.latitude {
@@ -235,16 +214,6 @@ class PhotoAlbumVC: UIViewController {
         }
     }
     
-    func savePhotosToDataStore(newPhotoDataSet: Set<NSData>) {
-        
-        for item in newPhotoDataSet {
-            let photoEntityToSave = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: sharedContext) as! Photo
-            photoEntityToSave.image = item
-            photoEntityToSave.pin = mapAnnotation.pin
-        }
-        
-        CoreDataStack.sharedInstance().saveContext()
-    }
     
     // MARK: - Actions
     
@@ -403,10 +372,6 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                 }
             }
         }
-        
-        // print("(cellForItemAtIndexPath) The number of photos to be saved is: ")
-        // print(setOfPhotosToSave.count)
-        
         
         if let image = photoFromfetchedResultsController.image {
             let imageUIImage = UIImage(data: image)
