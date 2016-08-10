@@ -35,6 +35,8 @@ class PhotoAlbumVC: UIViewController {
     var maxFlickrPhotoPageNumber = 1
     var targetFlickrPhotoPage = 1
     
+    var displayedPhotosCount: Int!
+    
     // MARK: - Outlets
     
     @IBOutlet var mapView: MKMapView!
@@ -96,6 +98,10 @@ class PhotoAlbumVC: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        displayedPhotosCount = 0
+        newCollectionButton.alpha = 0.5
+        newCollectionButton.enabled = false
+        
         /* Configure the collection view cell size */
         let space: CGFloat = 1.0
         let dimension = (view.frame.size.width - (2*space)) / 3.0
@@ -106,6 +112,8 @@ class PhotoAlbumVC: UIViewController {
         if let totalStoredPhotos = fetchedResultsController.fetchedObjects?.count {
             if totalStoredPhotos > 0 {
                 locationHasStoredPhotos = true
+                self.newCollectionButton.alpha = 1.0
+                self.newCollectionButton.enabled = true
             }
         }
         
@@ -242,6 +250,10 @@ class PhotoAlbumVC: UIViewController {
     
     @IBAction func newCollectionTapped(sender: AnyObject) {
         
+        newCollectionButton.alpha = 0.5
+        newCollectionButton.enabled = false
+        displayedPhotosCount = 0
+        
         print("\nThe New Collection button was tapped")
         print("The index for the last page of photos is: \(maxFlickrPhotoPageNumber)")
         print("The target photo page number is: \(targetFlickrPhotoPage)")
@@ -363,6 +375,12 @@ extension PhotoAlbumVC: UICollectionViewDataSource, UICollectionViewDelegate {
                         
                         performUIUpdatesOnMain(){
                             cell.touristPhotoCellImageView.image = cellImage
+                            self.displayedPhotosCount = self.displayedPhotosCount + 1
+                            
+                            if self.displayedPhotosCount >= self.maxPhotos {
+                                self.newCollectionButton.alpha = 1.0
+                                self.newCollectionButton.enabled = true
+                            }
                         }
                         
                         self.setOfPhotosToSave.insert(imageData!)
