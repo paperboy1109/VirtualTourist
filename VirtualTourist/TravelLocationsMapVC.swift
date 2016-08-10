@@ -72,7 +72,6 @@ class TravelLocationsMapVC: UIViewController {
         } else {
             editButton.title = "Done"
             if let font = UIFont(name: "Helvetica Neue", size: 15) {
-                print("Trying to apply font ... ")
                 editButton.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
             }
         }
@@ -198,11 +197,11 @@ class TravelLocationsMapVC: UIViewController {
                 annotation.title = title
                 
                 /* Create a Pin entity, a custom annotation based on it, and add an annotation to the map */
-                print("Creating a new Pin entity .... ")
+                //print("Creating a new Pin entity .... ")
                 let pinAnnotation = self.saveNewPinAndCreateAnnotation(annotation)
                 self.mapView.addAnnotation(pinAnnotation)
-                print("This annotation was added to the map: ")
-                print(pinAnnotation.title)
+                //print("This annotation was added to the map: ")
+                //print(pinAnnotation.title)
 
             }
             

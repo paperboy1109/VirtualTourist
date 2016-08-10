@@ -14,8 +14,6 @@ extension FlickrClient {
     
     func getNewPhotoArrayWithConstraints(locationParameterKey: String, targetPageNumber: Int, maxPhotos: Int, completionHandlerForGetNewPhotoArrayWithConstraints: (newPhotoArray: [NewPhoto]?, pageTotal:Int?, error: Bool, errorDesc: String?) -> Void) {
         
-        print("\ngetNewPhotoArrayWithConstraints called")
-        
         // Set method parameters
         let methodParameters: [String: String!] = [
             FlickrClient.Constants.FlickrParameterKeys.Method: FlickrClient.Constants.FlickrParameterValues.SearchMethod,
@@ -47,7 +45,7 @@ extension FlickrClient {
                         /* Pick photos randomly from those available and append them to the array */
                         let randomPhotoIndices = self.uniquePhotoIndices(min(maxPhotos, imageDictionaries.count), minIndex: 0, maxIndex: UInt32(imageDictionaries.count-1))
                         
-                        print("Here are the random photo indices: \(randomPhotoIndices)")
+                        //print("Here are the random photo indices: \(randomPhotoIndices)")
                         
                         for index in 0...(randomPhotoIndices.count-1) {
                             
@@ -78,7 +76,7 @@ extension FlickrClient {
                         completionHandlerForGetNewPhotoArrayWithConstraints(newPhotoArray: newPhotoArrayToReturn, pageTotal: pageTotal, error: false, errorDesc: nil)
                         
                     } else {
-                        print("No images were returned")
+                        //print("No images were returned")
                         completionHandlerForGetNewPhotoArrayWithConstraints(newPhotoArray: nil, pageTotal: 1, error: true, errorDesc: "No images were returned")
                     }
                     

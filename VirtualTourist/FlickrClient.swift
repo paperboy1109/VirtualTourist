@@ -27,8 +27,7 @@ class FlickrClient: NSObject {
     
     func returnImageArrayFromFlickr(methodParameters: [String:AnyObject], completionHandlerForReturnImageArrayFromFlickrBySearch: (imageDataArray: [[String:AnyObject]]?, pageTotal: Int?, error: Bool, errorDesc: String?) -> Void) {
         
-        print("returnImageArrayFromFlickr called")
-        // What parameters were received?
+        // What are the parameters that were received?
         // print(flickrURLFromParameters(methodParameters))
         
         // Make a request to Flickr!
@@ -95,8 +94,8 @@ class FlickrClient: NSObject {
             //print("Here is photoArray: \(photoArray)")
             //print("Here is the number of photos: \(photoArray.count)")
             
-            print("Here is the number of pages available for the given location: ")
-            print(photosDictionary[Constants.FlickrResponseKeys.Pages])
+            //print("Here is the number of pages available for the given location: ")
+            //print(photosDictionary[Constants.FlickrResponseKeys.Pages])
             
             // Prevent crash if there is a problem getting the number of pages of photos
             guard let pageTotal = photosDictionary[Constants.FlickrResponseKeys.Pages] as? Int else {
@@ -105,7 +104,7 @@ class FlickrClient: NSObject {
                 return
             }
             
-            print("Here is pageTotal:\(pageTotal)")
+            // print("Here is pageTotal:\(pageTotal)")
             
             completionHandlerForReturnImageArrayFromFlickrBySearch(imageDataArray: photoArray, pageTotal: pageTotal, error: false, errorDesc: nil)
         }

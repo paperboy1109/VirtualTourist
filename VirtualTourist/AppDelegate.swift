@@ -32,11 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if NSUserDefaults.standardUserDefaults().boolForKey(previousUseKey) {
             
-            print("The app has been used before")
+            //print("The app has been used before")
             
         } else {
             
-            print("The app has not been used before")
+            //print("The app has not been used before")
             
             /* This is the default view of North America */
             //            defaultCenter = CLLocationCoordinate2D(latitude: 37.13283999999998, longitude: -95.785579999999996)
